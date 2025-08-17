@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:vibration/vibration.dart';
+import 'package:flutter/services.dart';
+// import 'package:vibration/vibration.dart';  // Webビルドで問題を起こすため無効化
 import '../models/order.dart';
 import '../services/profit_calculator.dart';
 
@@ -28,9 +29,8 @@ class PositionItem extends StatelessWidget {
         onTap: onTap,
         onLongPress: () async {
           // Android版と同じ振動フィードバック（100ms）
-          if (await Vibration.hasVibrator() ?? false) {
-            Vibration.vibrate(duration: 100);
-          }
+          // Web版では HapticFeedback を使用
+          HapticFeedback.lightImpact();
           onLongPress();
         },
         child: Padding(

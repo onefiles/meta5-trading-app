@@ -33,8 +33,8 @@ dependencies:
   
   # UI Enhancements
   flutter_slidable: ^3.0.1
-  webview_flutter: ^4.4.2
-  vibration: ^1.8.4  # Android版と同じ振動フィードバック
+  # webview_flutter: ^4.4.2  # Webビルドで問題を起こすため無効化
+  # vibration: ^1.8.4  # Webビルドで問題を起こすため無効化
 
 dev_dependencies:
   flutter_test:
