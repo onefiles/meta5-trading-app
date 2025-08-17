@@ -15,7 +15,6 @@ jobs:
       # Flutterをセットアップ
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
           channel: 'stable'
       
       # 依存関係をインストール
