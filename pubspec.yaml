@@ -1,0 +1,48 @@
+name: meta5_trading
+description: Meta5 Trading Application for iOS and Android
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # UI Components
+  cupertino_icons: ^1.0.6
+  
+  # HTTP & API
+  http: ^1.1.0
+  web_socket_channel: ^2.4.0
+  
+  # State Management
+  provider: ^6.1.1
+  
+  # Database
+  sqflite: ^2.3.0
+  path: ^1.8.3
+  
+  # Storage
+  shared_preferences: ^2.2.2
+  
+  # Utilities
+  intl: ^0.18.1
+  uuid: ^4.2.1
+  
+  # UI Enhancements
+  flutter_slidable: ^3.0.1
+  webview_flutter: ^4.4.2
+  vibration: ^1.8.4  # Android版と同じ振動フィードバック
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/icons/
