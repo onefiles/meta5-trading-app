@@ -8,6 +8,7 @@ import '../services/database_service.dart';
 import '../services/price_service.dart';
 import '../services/profit_calculator.dart';
 import 'price_provider.dart';
+import 'history_provider.dart';
 
 class OrderProvider extends ChangeNotifier {
   final List<Order> _orders = [];
@@ -15,6 +16,7 @@ class OrderProvider extends ChangeNotifier {
   final DatabaseService _db = DatabaseService();
   final PriceService _priceService = PriceService();
   PriceProvider? _priceProvider;
+  HistoryProvider? _historyProvider;
   
   double _balance = 1000000.0; // 初期残高100万円
   double _credit = 200000.0; // クレジット額（Android版と同じ）
@@ -58,6 +60,10 @@ class OrderProvider extends ChangeNotifier {
   
   void setPriceProvider(PriceProvider priceProvider) {
     _priceProvider = priceProvider;
+  }
+  
+  void setHistoryProvider(HistoryProvider? historyProvider) {
+    _historyProvider = historyProvider;
   }
   
   Future<void> _initializeProvider() async {
@@ -267,11 +273,44 @@ class OrderProvider extends ChangeNotifier {
       // 残高を更新
       _balance += order.profit;
       
-      // オーダーを履歴に移動
-      await _db.moveOrderToHistory(order, order.currentPrice);
+      // SharedPreferencesに残高を保存
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setDouble('balance', _balance);
       
+      // メモリ上の履歴に追加（Web環境対応）
+      final historyItem = TradeHistory(
+        ticket: order.ticket,
+        symbol: order.symbol,
+        type: order.type,
+        lots: order.lots,
+        openPrice: order.openPrice,
+        closePrice: order.currentPrice,
+        openTime: order.openTime,
+        closeTime: DateTime.now().millisecondsSinceEpoch,
+        profit: order.profit,
+        commission: order.commission,
+        swap: order.swap,
+      );
+      
+      _history.insert(0, historyItem); // 最新の履歴を先頭に追加
+      
+      // HistoryProviderにも追加（履歴画面で表示されるように）
+      if (_historyProvider != null) {
+        _historyProvider!.addHistory(historyItem);
+      }
+      
+      // オーダーをリストから削除
       _orders.removeWhere((o) => o.ticket == order.ticket);
+      
+      // 即座にUIを更新
       notifyListeners();
+      
+      // データベースへの保存は非同期で試みる（エラーは無視）
+      _db.moveOrderToHistory(order, order.currentPrice).catchError((e) {
+        print('Database save failed (Web environment): $e');
+      });
+      
+      print('Order closed: ${order.symbol} - Profit: ${order.profit.toStringAsFixed(2)}');
     } catch (e) {
       print('Error removing order: $e');
     }

@@ -103,9 +103,11 @@ class _AppWrapperState extends State<AppWrapper> {
       final priceProvider = context.read<PriceProvider>();
       final orderProvider = context.read<OrderProvider>();
       final alertProvider = context.read<AlertProvider>();
+      final historyProvider = context.read<HistoryProvider>();
       
-      // OrderProviderにPriceProviderを設定
+      // OrderProviderにPriceProviderとHistoryProviderを設定
       orderProvider.setPriceProvider(priceProvider);
+      orderProvider.setHistoryProvider(historyProvider);
       
       // 価格更新時のアラートチェックを設定
       priceProvider.setPriceUpdateCallback((symbol, price) {
