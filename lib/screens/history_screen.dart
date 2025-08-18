@@ -90,6 +90,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     borderRadius: BorderRadius.circular(6), // 角丸を小さく（22px → 6px）
                   ),
                   child: TextField(
+                    textAlignVertical: TextAlignVertical.center, // テキストを中央配置
                     decoration: const InputDecoration(
                       hintText: '検索シンボルを入力',
                       hintStyle: TextStyle(
@@ -99,10 +100,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       prefixIcon: Icon(
                         Icons.search,
                         color: Color(0xFF999999),
-                        size: 24, // アイコンサイズを大きく（20px → 24px）
+                        size: 28, // アイコンサイズをさらに大きく（24px → 28px）
+                      ),
+                      prefixIconConstraints: BoxConstraints(
+                        minWidth: 40, // アイコンとテキストの間隔を狭く
+                        minHeight: 0,
                       ),
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0), // パディング調整
+                      isDense: true, // コンパクトにする
                     ),
                     onChanged: (value) {
                       setState(() {
