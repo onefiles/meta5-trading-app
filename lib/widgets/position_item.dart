@@ -23,76 +23,84 @@ class PositionItem extends StatelessWidget {
         ? const Color(0xFF007aff) 
         : const Color(0xFFe21d1d);
     
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      child: InkWell(
-        onTap: onTap,
-        onLongPress: () async {
-          // Android版と同じ振動フィードバック（100ms）
-          // Web版では HapticFeedback を使用
-          HapticFeedback.lightImpact();
-          onLongPress();
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 上段：シンボル、タイプ、ロット数
-              Row(
-                children: [
-                  Text(
-                    '${order.symbolDisplay},',
-                    style: const TextStyle(
-                      color: Color(0xFF525252),
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
+    // Android版と同じ: Cardを使わず、区切り線のみのフラットなデザイン
+    return Column(
+      children: [
+        InkWell(
+          onTap: onTap,
+          onLongPress: () async {
+            // Android版と同じ振動フィードバック（100ms）
+            // Web版では HapticFeedback を使用
+            HapticFeedback.lightImpact();
+            onLongPress();
+          },
+          child: Container(
+            color: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 上段：シンボル、タイプ、ロット数
+                Row(
+                  children: [
+                    Text(
+                      '${order.symbolDisplay},',
+                      style: const TextStyle(
+                        color: Color(0xFF525252),
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    order.typeText,
-                    style: TextStyle(
-                      color: typeColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
+                    const SizedBox(width: 4),
+                    Text(
+                      order.typeText,
+                      style: TextStyle(
+                        color: typeColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    order.lots.toStringAsFixed(2),
-                    style: TextStyle(
-                      color: typeColor,
-                      fontSize: 14,
+                    const SizedBox(width: 8),
+                    Text(
+                      order.lots.toStringAsFixed(2),
+                      style: TextStyle(
+                        color: typeColor,
+                        fontSize: 14,
+                      ),
                     ),
-                  ),
-                  const Spacer(),
-                  // 損益表示
-                  Text(
-                    ProfitCalculator.formatProfit(order.profit),
-                    style: TextStyle(
-                      color: isProfit ? const Color(0xFF007aff) : const Color(0xFFe21d1d),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                    const Spacer(),
+                    // 損益表示
+                    Text(
+                      ProfitCalculator.formatProfit(order.profit),
+                      style: TextStyle(
+                        color: isProfit ? const Color(0xFF007aff) : const Color(0xFFe21d1d),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              
-              const SizedBox(height: 8),
-              
-              // 下段：価格範囲
-              Text(
-                '${ProfitCalculator.formatPrice(order.openPrice, order.symbol)} → ${ProfitCalculator.formatPrice(order.currentPrice, order.symbol)}',
-                style: const TextStyle(
-                  color: Color(0xFF95979b),
-                  fontSize: 12,
+                  ],
                 ),
-              ),
-            ],
+                
+                const SizedBox(height: 8),
+                
+                // 下段：価格範囲
+                Text(
+                  '${ProfitCalculator.formatPrice(order.openPrice, order.symbol)} → ${ProfitCalculator.formatPrice(order.currentPrice, order.symbol)}',
+                  style: const TextStyle(
+                    color: Color(0xFF95979b),
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
+        // 区切り線（Android版と同じ）
+        Container(
+          height: 0.5,
+          color: const Color(0xFFE0E0E0),
+        ),
+      ],
     );
   }
   

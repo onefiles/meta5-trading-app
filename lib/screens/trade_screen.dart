@@ -197,30 +197,28 @@ class _TradeScreenState extends State<TradeScreen> {
                 final sortedOrders = _applySorting(List.from(provider.orders));
                 
                 return ListView.builder(
-                  padding: const EdgeInsets.only(top: 1),
+                  padding: EdgeInsets.zero,  // Android版と同じ: パディングなし
                   itemCount: sortedOrders.length,
                   itemBuilder: (context, index) {
                     final order = sortedOrders[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      child: Slidable(
-                        endActionPane: ActionPane(
-                          motion: const ScrollMotion(),
-                          children: [
-                            SlidableAction(
-                              onPressed: (_) => _closePosition(order),
-                              backgroundColor: Colors.red,
-                              foregroundColor: Colors.white,
-                              icon: Icons.close,
-                              label: '決済',
-                            ),
-                          ],
-                        ),
-                        child: PositionItem(
-                          order: order,
-                          onTap: () => _showPositionDetails(order),
-                          onLongPress: () => _quickClosePosition(order),
-                        ),
+                    // Android版と同じ: 余計なPaddingを削除、Slidableも直接配置
+                    return Slidable(
+                      endActionPane: ActionPane(
+                        motion: const ScrollMotion(),
+                        children: [
+                          SlidableAction(
+                            onPressed: (_) => _closePosition(order),
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                            icon: Icons.close,
+                            label: '決済',
+                          ),
+                        ],
+                      ),
+                      child: PositionItem(
+                        order: order,
+                        onTap: () => _showPositionDetails(order),
+                        onLongPress: () => _quickClosePosition(order),
                       ),
                     );
                   },
