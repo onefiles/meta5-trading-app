@@ -57,72 +57,67 @@ class _HistoryScreenState extends State<HistoryScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         title: const Text(
-          '取引履歴',
+          '履歴',
           style: TextStyle(
             color: Colors.black,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.sort, color: Colors.black),
-            onPressed: _showSortMenu,
-          ),
-          IconButton(
-            icon: const Icon(Icons.filter_list, color: Colors.black),
-            onPressed: _showFilterMenu,
-          ),
-          IconButton(
-            icon: const Icon(Icons.date_range, color: Colors.black),
-            onPressed: _showPeriodMenu,
-          ),
-        ],
       ),
       body: Column(
         children: [
-          // フィルター表示エリア
-          if (_selectedSymbol != '全て' || _selectedType != '全て' || _selectedPeriod == 'custom')
-            Container(
-              color: Colors.grey.shade100,
-              padding: const EdgeInsets.all(12),
-              child: Row(
-                children: [
-                  const Icon(Icons.filter_list, size: 16, color: Colors.grey),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Wrap(
-                      spacing: 8,
-                      children: [
-                        if (_selectedSymbol != '全て')
-                          _buildFilterChip('通貨: $_selectedSymbol', () {
-                            setState(() {
-                              _selectedSymbol = '全て';
-                            });
-                          }),
-                        if (_selectedType != '全て')
-                          _buildFilterChip('タイプ: $_selectedType', () {
-                            setState(() {
-                              _selectedType = '全て';
-                            });
-                          }),
-                        if (_selectedPeriod == 'custom' && _customStartDate != null)
-                          _buildFilterChip(
-                            '期間: ${DateFormat('MM/dd').format(_customStartDate!)} - ${_customEndDate != null ? DateFormat('MM/dd').format(_customEndDate!) : '現在'}',
-                            () {
-                              setState(() {
-                                _selectedPeriod = 'week';
-                                _customStartDate = null;
-                                _customEndDate = null;
-                              });
-                            },
-                          ),
-                      ],
-                    ),
+          // Android版と同じ上部フィルター
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                // 期間選択ボタン（日/週/月/カスタム）
+                Row(
+                  children: [
+                    _buildPeriodButton('日', 'day'),
+                    const SizedBox(width: 8),
+                    _buildPeriodButton('週', 'week'),
+                    const SizedBox(width: 8),
+                    _buildPeriodButton('月', 'month'),
+                    const SizedBox(width: 8),
+                    _buildPeriodButton('カスタム', 'custom'),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                // 検索シンボル入力
+                Container(
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF0F0F0),
+                    borderRadius: BorderRadius.circular(22),
                   ),
-                ],
-              ),
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      hintText: '検索シンボルを入力',
+                      hintStyle: TextStyle(
+                        color: Color(0xFF999999),
+                        fontSize: 16,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Color(0xFF999999),
+                        size: 20,
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedSymbol = value.isEmpty ? '全て' : value.toUpperCase();
+                      });
+                    },
+                  ),
+                ),
+              ],
             ),
+          ),
           
           // 履歴リスト
           Expanded(
@@ -139,12 +134,22 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   );
                 }
 
-                return ListView.builder(
-                  padding: const EdgeInsets.all(0),
-                  itemCount: history.length,
+                return ListView.separated(
+                  padding: EdgeInsets.zero,
+                  itemCount: history.length + 1, // +1 for statistics section
+                  separatorBuilder: (context, index) {
+                    return Container(
+                      height: 0.5,
+                      color: const Color(0xFFE0E0E0),
+                    );
+                  },
                   itemBuilder: (context, index) {
+                    if (index == history.length) {
+                      // 最後に統計情報を表示
+                      return _buildStatisticsSection(provider);
+                    }
                     final item = history[index];
-                    return _buildHistoryItem(item);
+                    return _buildAndroidHistoryItem(item);
                   },
                 );
               },
@@ -777,4 +782,195 @@ class _HistoryScreenState extends State<HistoryScreen> {
       ),
     );
   }
+
+  // Android版と同じ履歴アイテムを構築
+  Widget _buildAndroidHistoryItem(TradeHistory item) {
+    final isProfit = item.profit >= 0;
+    final profitColor = isProfit ? const Color(0xFF007aff) : const Color(0xFFe21d1d);
+    
+    return Container(
+      padding: const EdgeInsets.all(16),
+      color: Colors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 上部：シンボル、タイプ、ロット数、時間
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Balance/Deposit行
+                    if (item.symbol == 'BALANCE')
+                      const Text(
+                        'Balance',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      )
+                    else
+                      Text(
+                        '${item.symbol}, ${item.type == OrderType.buy ? 'buy' : 'sell'} ${item.lots.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF525252),
+                        ),
+                      ),
+                    const SizedBox(height: 4),
+                    // 価格範囲またはDeposit
+                    if (item.symbol != 'BALANCE')
+                      Text(
+                        '${_formatAndroidPrice(item.openPrice, item.symbol)} → ${_formatAndroidPrice(item.closePrice, item.symbol)}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF95979b),
+                        ),
+                      )
+                    else
+                      const Text(
+                        'Deposit',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF007aff),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // 時間
+                  Text(
+                    _formatAndroidDateTime(item.closeTime),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF95979b),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  // 損益
+                  Text(
+                    _formatAndroidProfit(item.profit),
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: profitColor,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatAndroidPrice(double price, String symbol) {
+    if (symbol == 'BTCJPY') {
+      return _formatAmountWithSpaces(price);
+    } else {
+      return price.toStringAsFixed(2);
+    }
+  }
+
+  String _formatAndroidProfit(double profit) {
+    return _formatAmountWithSpaces(profit);
+  }
+
+  String _formatAndroidDateTime(int timestamp) {
+    final dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    return DateFormat('yyyy.MM.dd HH:mm:ss').format(dateTime);
+  }
+
+  // 期間選択ボタンを構築
+  Widget _buildPeriodButton(String text, String period) {
+    final isSelected = _selectedPeriod == period;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _selectedPeriod = period;
+            if (period == 'custom') {
+              _showDateRangePicker();
+            }
+          });
+        },
+        child: Container(
+          height: 36,
+          decoration: BoxDecoration(
+            color: isSelected ? const Color(0xFF007aff) : const Color(0xFFF0F0F0),
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: Center(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: isSelected ? Colors.white : const Color(0xFF666666),
+                fontSize: 14,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 統計情報セクションを構築
+  Widget _buildStatisticsSection(HistoryProvider provider) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      color: Colors.white,
+      child: Column(
+        children: [
+          _buildStatRow('損益:', provider.totalProfit),
+          _buildStatRow('クレジット:', 0.0),
+          _buildStatRow('証拠金:', 100000.0),
+          _buildStatRow('出金:', 0.0),
+          _buildStatRow('残高:', 101616.0), // Android版と同じ値
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatRow(String label, double value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Color(0xFF666666),
+            ),
+          ),
+          Text(
+            _formatAmountWithSpaces(value),
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatAmountWithSpaces(double amount) {
+    final formatted = amount.toInt().toString().replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]} ',
+    );
+    return formatted;
+  }
+
 }
