@@ -75,9 +75,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
               children: [
                 // 期間選択ボタン（1つの枠に縦線区切り）
                 Container(
-                  height: 36,
+                  height: 32,
+                  width: 240, // 横幅を制限
                   decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0xFFE0E0E0)),
+                    color: const Color(0xFFF0F0F0), // 検索バーと同じグレー背景
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Row(
@@ -909,9 +910,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
           });
         },
         child: Container(
-          height: 34, // 枠の高さから2px引いた値
+          height: 30, // 枠の高さに合わせて調整
           decoration: BoxDecoration(
-            color: isSelected ? Colors.white : Colors.transparent,
+            color: isSelected ? Colors.white : Colors.transparent, // 選択時のみ白背景
             borderRadius: BorderRadius.only(
               topLeft: isFirst ? const Radius.circular(5) : Radius.zero,
               bottomLeft: isFirst ? const Radius.circular(5) : Radius.zero,
@@ -923,8 +924,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
             child: Text(
               text,
               style: TextStyle(
-                color: isSelected ? const Color(0xFF007aff) : const Color(0xFF666666),
-                fontSize: 14,
+                color: isSelected ? Colors.black : const Color(0xFF999999), // 選択時は黒、未選択時はグレー
+                fontSize: 12, // フォントサイズを小さく
                 fontWeight: FontWeight.normal,
               ),
             ),
@@ -938,8 +939,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget _buildVerticalDivider() {
     return Container(
       width: 1,
-      height: 20,
-      color: const Color(0xFFE0E0E0),
+      height: 18, // 高さも小さく調整
+      color: const Color(0xFFD0D0D0),
     );
   }
 
