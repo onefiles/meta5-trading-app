@@ -73,17 +73,24 @@ class _HistoryScreenState extends State<HistoryScreen> {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                // 期間選択ボタン（日/週/月/カスタム）
-                Row(
-                  children: [
-                    _buildPeriodButton('日', 'day'),
-                    const SizedBox(width: 8),
-                    _buildPeriodButton('週', 'week'),
-                    const SizedBox(width: 8),
-                    _buildPeriodButton('月', 'month'),
-                    const SizedBox(width: 8),
-                    _buildPeriodButton('カスタム', 'custom'),
-                  ],
+                // 期間選択ボタン（1つの枠に縦線区切り）
+                Container(
+                  height: 36,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: const Color(0xFFE0E0E0)),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Row(
+                    children: [
+                      _buildSegmentButton('日', 'day', isFirst: true),
+                      _buildVerticalDivider(),
+                      _buildSegmentButton('週', 'week'),
+                      _buildVerticalDivider(),
+                      _buildSegmentButton('月', 'month'),
+                      _buildVerticalDivider(),
+                      _buildSegmentButton('カスタム', 'custom', isLast: true),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 16),
                 // 検索シンボル入力
@@ -888,8 +895,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return DateFormat('yyyy.MM.dd HH:mm:ss').format(dateTime);
   }
 
-  // 期間選択ボタンを構築
-  Widget _buildPeriodButton(String text, String period) {
+  // セグメント化されたボタンを構築（Android版と同じ）
+  Widget _buildSegmentButton(String text, String period, {bool isFirst = false, bool isLast = false}) {
     final isSelected = _selectedPeriod == period;
     return Expanded(
       child: GestureDetector(
@@ -902,23 +909,37 @@ class _HistoryScreenState extends State<HistoryScreen> {
           });
         },
         child: Container(
-          height: 36,
+          height: 34, // 枠の高さから2px引いた値
           decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFF007aff) : const Color(0xFFF0F0F0),
-            borderRadius: BorderRadius.circular(18),
+            color: isSelected ? Colors.white : Colors.transparent,
+            borderRadius: BorderRadius.only(
+              topLeft: isFirst ? const Radius.circular(5) : Radius.zero,
+              bottomLeft: isFirst ? const Radius.circular(5) : Radius.zero,
+              topRight: isLast ? const Radius.circular(5) : Radius.zero,
+              bottomRight: isLast ? const Radius.circular(5) : Radius.zero,
+            ),
           ),
           child: Center(
             child: Text(
               text,
               style: TextStyle(
-                color: isSelected ? Colors.white : const Color(0xFF666666),
+                color: isSelected ? const Color(0xFF007aff) : const Color(0xFF666666),
                 fontSize: 14,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                fontWeight: FontWeight.normal,
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  // 縦線の区切り
+  Widget _buildVerticalDivider() {
+    return Container(
+      width: 1,
+      height: 20,
+      color: const Color(0xFFE0E0E0),
     );
   }
 
