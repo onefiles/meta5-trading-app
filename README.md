@@ -1,6 +1,6 @@
-# flutter_meta5
+# Meta5 Trading App
 
-A new Flutter project.
+Flutter-based trading application with real MT4 price data integration.
 
 ## Getting Started
 
