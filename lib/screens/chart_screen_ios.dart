@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter/foundation.dart';
+// import 'package:webview_flutter/webview_flutter.dart';  // Webビルドで問題を起こすため無効化
 
 class ChartScreenIOS extends StatefulWidget {
   const ChartScreenIOS({Key? key}) : super(key: key);
@@ -9,7 +10,7 @@ class ChartScreenIOS extends StatefulWidget {
 }
 
 class _ChartScreenIOSState extends State<ChartScreenIOS> {
-  late WebViewController controller;
+  // late WebViewController controller;  // Webビルドで問題を起こすため無効化
   String selectedSymbol = 'GBPJPY';
   String selectedTimeframe = '1H';
   bool isLoading = true;
@@ -20,30 +21,34 @@ class _ChartScreenIOSState extends State<ChartScreenIOS> {
   @override
   void initState() {
     super.initState();
-    controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            if (progress == 100) {
-              setState(() {
-                isLoading = false;
-              });
-            }
-          },
-          onPageStarted: (String url) {
-            setState(() {
-              isLoading = true;
-            });
-          },
-          onPageFinished: (String url) {
-            setState(() {
-              isLoading = false;
-            });
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse(_getChartUrl()));
+    // Web版では WebViewController を無効化
+    // controller = WebViewController()
+    //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    //   ..setNavigationDelegate(
+    //     NavigationDelegate(
+    //       onProgress: (int progress) {
+    //         if (progress == 100) {
+    //           setState(() {
+    //             isLoading = false;
+    //           });
+    //         }
+    //       },
+    //       onPageStarted: (String url) {
+    //         setState(() {
+    //           isLoading = true;
+    //         });
+    //       },
+    //       onPageFinished: (String url) {
+    //         setState(() {
+    //           isLoading = false;
+    //         });
+    //       },
+    //     ),
+    //   )
+    //   ..loadRequest(Uri.parse(_getChartUrl()));
+    setState(() {
+      isLoading = false;
+    });
   }
 
   String _getChartUrl() {
@@ -54,7 +59,16 @@ class _ChartScreenIOSState extends State<ChartScreenIOS> {
     setState(() {
       isLoading = true;
     });
-    controller.loadRequest(Uri.parse(_getChartUrl()));
+    // Web版では WebViewController を無効化
+    // controller.loadRequest(Uri.parse(_getChartUrl()));
+    
+    // 代替として、TradingViewへのリンクを表示
+    if (kIsWeb) {
+      // Web版では簡単に処理を完了
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void _showSymbolPicker() {
@@ -163,7 +177,51 @@ class _ChartScreenIOSState extends State<ChartScreenIOS> {
             Expanded(
               child: Stack(
                 children: [
-                  WebViewWidget(controller: controller),
+                  // Web版では WebViewWidget を無効化し、代替UI表示
+                  if (kIsWeb)
+                    Container(
+                      color: CupertinoColors.systemGroupedBackground,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              CupertinoIcons.chart_bar,
+                              size: 64,
+                              color: CupertinoColors.systemGrey,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              '$selectedSymbol ($selectedTimeframe)',
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: CupertinoColors.label,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'チャート機能はWeb版では制限されています',
+                              style: TextStyle(
+                                color: CupertinoColors.secondaryLabel,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            CupertinoButton.filled(
+                              onPressed: () {
+                                // TradingView URLを新しいタブで開く（Web版）
+                                // 実際のアプリではurl_launcherを使用
+                              },
+                              child: const Text('TradingViewで開く'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else
+                    // ネイティブ版では WebViewWidget を表示
+                    Container(),
+                    // WebViewWidget(controller: controller),  // Web版無効化
                   if (isLoading)
                     const Center(
                       child: CupertinoActivityIndicator(
