@@ -10,24 +10,33 @@ jobs:
     
     steps:
       # コードをチェックアウト
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       # Flutterをセットアップ
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+          cache: true
       
       # 依存関係をインストール
       - name: Install dependencies
-        run: flutter pub get
+        run: |
+          flutter --version
+          flutter pub get
       
-      # Webビルド
+      # Webビルド（詳細ログ付き）
       - name: Build web
-        run: flutter build web --release
+        run: |
+          flutter clean
+          flutter build web --release --verbose --no-tree-shake-icons
+      
+      # ビルド結果を確認
+      - name: List build files
+        run: ls -la build/web/
       
       # Netlifyにデプロイ
       - name: Deploy to Netlify
-        uses: nwtgck/actions-netlify@v2.0
+        uses: nwtgck/actions-netlify@v3.0
         with:
           publish-dir: './build/web'
           production-branch: main
@@ -39,4 +48,4 @@ jobs:
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        timeout-minutes: 1
+        timeout-minutes: 10
