@@ -53,18 +53,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
     
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: const Text(
-          '履歴',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
       body: Column(
         children: [
           // Android版と同じ上部フィルター
@@ -93,13 +81,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 8), // 間隔を狭く（16px → 8px）
                 // 検索シンボル入力
                 Container(
-                  height: 44,
+                  height: 36, // 高さを低く（44px → 36px）
                   decoration: BoxDecoration(
                     color: const Color(0xFFF0F0F0),
-                    borderRadius: BorderRadius.circular(22),
+                    borderRadius: BorderRadius.circular(6), // 角丸を小さく（22px → 6px）
                   ),
                   child: TextField(
                     decoration: const InputDecoration(
@@ -111,7 +99,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       prefixIcon: Icon(
                         Icons.search,
                         color: Color(0xFF999999),
-                        size: 20,
+                        size: 24, // アイコンサイズを大きく（20px → 24px）
                       ),
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -913,12 +901,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           height: 30, // 枠の高さに合わせて調整
           decoration: BoxDecoration(
             color: isSelected ? Colors.white : Colors.transparent, // 選択時のみ白背景
-            borderRadius: BorderRadius.only(
-              topLeft: isFirst ? const Radius.circular(5) : Radius.zero,
-              bottomLeft: isFirst ? const Radius.circular(5) : Radius.zero,
-              topRight: isLast ? const Radius.circular(5) : Radius.zero,
-              bottomRight: isLast ? const Radius.circular(5) : Radius.zero,
-            ),
+            borderRadius: BorderRadius.circular(4), // 全体を角丸に（四角形ではなく）
           ),
           child: Center(
             child: Text(
