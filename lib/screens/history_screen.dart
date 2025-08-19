@@ -89,32 +89,34 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     color: const Color(0xFFF0F0F0),
                     borderRadius: BorderRadius.circular(6), // 角丸を小さく（22px → 6px）
                   ),
-                  child: TextField(
-                    textAlignVertical: TextAlignVertical.center, // テキストを中央配置
-                    decoration: const InputDecoration(
-                      hintText: '検索シンボルを入力',
-                      hintStyle: TextStyle(
-                        color: Color(0xFF999999),
-                        fontSize: 16,
+                  child: Center( // Container全体を中央配置
+                    child: TextField(
+                      textAlignVertical: TextAlignVertical.center, // テキストを中央配置
+                      decoration: const InputDecoration(
+                        hintText: '検索シンボルを入力',
+                        hintStyle: TextStyle(
+                          color: Color(0xFF999999),
+                          fontSize: 16,
+                        ),
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Color(0xFF999999),
+                          size: 22, // アイコンサイズを適切に調整（28px → 22px）
+                        ),
+                        prefixIconConstraints: BoxConstraints(
+                          minWidth: 40, // アイコンとテキストの間隔を狭く
+                          minHeight: 36, // 高さを明示的に指定
+                        ),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), // 縦パディングを追加
+                        isDense: false, // 密度を通常に戻す
                       ),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: Color(0xFF999999),
-                        size: 28, // アイコンサイズをさらに大きく（24px → 28px）
-                      ),
-                      prefixIconConstraints: BoxConstraints(
-                        minWidth: 40, // アイコンとテキストの間隔を狭く
-                        minHeight: 0,
-                      ),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0), // パディング調整
-                      isDense: true, // コンパクトにする
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedSymbol = value.isEmpty ? '全て' : value.toUpperCase();
+                        });
+                      },
                     ),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedSymbol = value.isEmpty ? '全て' : value.toUpperCase();
-                      });
-                    },
                   ),
                 ),
               ],
