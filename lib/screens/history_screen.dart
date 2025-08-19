@@ -89,34 +89,32 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     color: const Color(0xFFF0F0F0),
                     borderRadius: BorderRadius.circular(6), // 角丸を小さく（22px → 6px）
                   ),
-                  child: Center( // Container全体を中央配置
-                    child: TextField(
-                      textAlignVertical: TextAlignVertical.center, // テキストを中央配置
-                      decoration: const InputDecoration(
-                        hintText: '検索シンボルを入力',
-                        hintStyle: TextStyle(
-                          color: Color(0xFF999999),
-                          fontSize: 17, // フォントをほんの少し大きく（16px → 17px）
-                        ),
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: Color(0xFF999999),
-                          size: 24, // アイコンをほんの少し大きく（22px → 24px）
-                        ),
-                        prefixIconConstraints: BoxConstraints(
-                          minWidth: 40, // アイコンとテキストの間隔を狭く
-                          minHeight: 36, // 高さを明示的に指定
-                        ),
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), // 縦パディングを追加
-                        isDense: false, // 密度を通常に戻す
+                  child: TextField(
+                    textAlignVertical: TextAlignVertical.center, // テキストを垂直中央配置
+                    decoration: const InputDecoration(
+                      hintText: '検索シンボルを入力',
+                      hintStyle: TextStyle(
+                        color: Color(0xFF999999),
+                        fontSize: 17, // フォントをほんの少し大きく（16px → 17px）
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedSymbol = value.isEmpty ? '全て' : value.toUpperCase();
-                        });
-                      },
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Color(0xFF999999),
+                        size: 24, // アイコンをほんの少し大きく（22px → 24px）
+                      ),
+                      prefixIconConstraints: BoxConstraints(
+                        minWidth: 40, // アイコンとテキストの間隔を狭く
+                        minHeight: 36, // 高さを明示的に指定
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.only(right: 8, bottom: 2), // 垂直位置を調整（上寄りを解消）
+                      isDense: true, // 密度を調整
                     ),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedSymbol = value.isEmpty ? '全て' : value.toUpperCase();
+                      });
+                    },
                   ),
                 ),
               ],
@@ -917,7 +915,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               style: TextStyle(
                 color: isSelected ? Colors.black : const Color(0xFF999999), // 選択時は黒、未選択時はグレー
                 fontSize: 12, // フォントサイズを小さく
-                fontWeight: FontWeight.normal,
+                fontWeight: FontWeight.bold, // 太文字に変更
               ),
             ),
           ),

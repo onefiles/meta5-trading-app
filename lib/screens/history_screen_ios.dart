@@ -18,6 +18,8 @@ class _HistoryScreenIOSState extends State<HistoryScreenIOS> {
   String _selectedType = '全て';
   DateTime? _customStartDate;
   DateTime? _customEndDate;
+  String _searchQuery = '';
+  final TextEditingController _searchController = TextEditingController();
   
   final List<String> _symbols = ['全て', 'GBPJPY', 'BTCJPY', 'XAUUSD', 'EURUSD', 'USDJPY'];
   final List<String> _types = ['全て', '買い', '売り'];
@@ -32,6 +34,14 @@ class _HistoryScreenIOSState extends State<HistoryScreenIOS> {
 
   List<TradeHistory> _getFilteredHistory(HistoryProvider provider) {
     var history = provider.getFilteredHistory(_selectedPeriod);
+    
+    // 検索クエリフィルター
+    if (_searchQuery.isNotEmpty) {
+      history = history.where((h) => 
+        h.symbol.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+        h.symbolDisplayName.toLowerCase().contains(_searchQuery.toLowerCase())
+      ).toList();
+    }
     
     // 通貨ペアフィルター
     if (_selectedSymbol != '全て') {
@@ -59,6 +69,12 @@ class _HistoryScreenIOSState extends State<HistoryScreenIOS> {
     }
     
     return history;
+  }
+  
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   void _showFilterMenu() {
@@ -225,69 +241,53 @@ class _HistoryScreenIOSState extends State<HistoryScreenIOS> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: const Text('取引履歴'),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CupertinoButton(
-              padding: EdgeInsets.zero,
-              onPressed: _showFilterMenu,
-              child: const Icon(CupertinoIcons.slider_horizontal_3),
-            ),
-            CupertinoButton(
-              padding: EdgeInsets.zero,
-              onPressed: _showPeriodMenu,
-              child: const Icon(CupertinoIcons.calendar),
-            ),
-          ],
-        ),
-      ),
+      backgroundColor: CupertinoColors.systemGroupedBackground,
       child: SafeArea(
         child: Column(
           children: [
-            // フィルター表示エリア
-            if (_selectedSymbol != '全て' || _selectedType != '全て' || _selectedPeriod == 'custom')
-              Container(
-                color: CupertinoColors.systemGroupedBackground,
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  children: [
-                    const Icon(CupertinoIcons.slider_horizontal_3, size: 16, color: CupertinoColors.systemGrey),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Wrap(
-                        spacing: 8,
-                        children: [
-                          if (_selectedSymbol != '全て')
-                            _buildFilterChip('通貨: $_selectedSymbol', () {
-                              setState(() {
-                                _selectedSymbol = '全て';
-                              });
-                            }),
-                          if (_selectedType != '全て')
-                            _buildFilterChip('タイプ: $_selectedType', () {
-                              setState(() {
-                                _selectedType = '全て';
-                              });
-                            }),
-                          if (_selectedPeriod == 'custom' && _customStartDate != null)
-                            _buildFilterChip(
-                              '期間: ${DateFormat('MM/dd').format(_customStartDate!)} - ${_customEndDate != null ? DateFormat('MM/dd').format(_customEndDate!) : '現在'}',
-                              () {
-                                setState(() {
-                                  _selectedPeriod = 'week';
-                                  _customStartDate = null;
-                                  _customEndDate = null;
-                                });
-                              },
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+            // 期間選択タブ
+            Container(
+              color: CupertinoColors.white,
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildPeriodTab('日', 'day'),
+                  _buildPeriodTab('週', 'week'),
+                  _buildPeriodTab('月', 'month'),
+                  _buildPeriodTab('カスタム', 'custom'),
+                ],
               ),
+            ),
+            
+            // 検索ボックス
+            Container(
+              color: CupertinoColors.systemGroupedBackground,
+              padding: const EdgeInsets.all(12),
+              child: CupertinoTextField(
+                controller: _searchController,
+                placeholder: '検索シンボルを入力',
+                prefix: const Padding(
+                  padding: EdgeInsets.only(left: 8),
+                  child: Icon(
+                    CupertinoIcons.search,
+                    color: CupertinoColors.systemGrey,
+                    size: 20,
+                  ),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                decoration: BoxDecoration(
+                  color: CupertinoColors.white,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value;
+                  });
+                },
+                clearButtonMode: OverlayVisibilityMode.editing,
+              ),
+            ),
             
             // 履歴リスト
             Expanded(
@@ -316,6 +316,37 @@ class _HistoryScreenIOSState extends State<HistoryScreenIOS> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPeriodTab(String label, String value) {
+    final isSelected = _selectedPeriod == value;
+    return GestureDetector(
+      onTap: () {
+        if (value == 'custom') {
+          _showDatePicker();
+        } else {
+          setState(() {
+            _selectedPeriod = value;
+            _customStartDate = null;
+            _customEndDate = null;
+          });
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? CupertinoColors.systemGrey5 : CupertinoColors.white,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? CupertinoColors.activeBlue : CupertinoColors.label,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+          ),
         ),
       ),
     );
