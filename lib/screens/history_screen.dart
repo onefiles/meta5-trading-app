@@ -96,12 +96,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         hintText: '検索シンボルを入力',
                         hintStyle: TextStyle(
                           color: Color(0xFF999999),
-                          fontSize: 16,
+                          fontSize: 17, // フォントをほんの少し大きく（16px → 17px）
                         ),
                         prefixIcon: Icon(
                           Icons.search,
                           color: Color(0xFF999999),
-                          size: 22, // アイコンサイズを適切に調整（28px → 22px）
+                          size: 24, // アイコンをほんの少し大きく（22px → 24px）
                         ),
                         prefixIconConstraints: BoxConstraints(
                           minWidth: 40, // アイコンとテキストの間隔を狭く
