@@ -40,7 +40,14 @@ git add . && git commit -m "Update" && git push
 3. 「CLAUDE.mdの内容を確認して開発を続ける」と伝える
 
 ## 最近の更新
+- 2025/08/19: iPhone版取引履歴にタブと検索ボックス追加
+- 2025/08/19: GitHub Actions自動デプロイトラブル調査中
 - 2024/12/18: Netlify新サイトでデプロイ成功
 - 2024/12/18: GitHub Actions自動デプロイ復活
 - 2024/12/18: iPhoneでPWAインストール確認
+
+## デプロイ状況
+- **現在のサイト**: delicate-vacherin-cd3cde (GitHub Actions設定済み)
+- **他のサイト**: melodious-truffle-9af3ac (GitHub連携), gleaming-crumble-0175e9 など
+- **問題**: GitHub Actionsが動作していない可能性あり（手動デプロイが必要）
 
