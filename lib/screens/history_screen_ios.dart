@@ -298,7 +298,7 @@ class _HistoryScreenIOSState extends State<HistoryScreenIOS> {
                   if (history.isEmpty) {
                     return const Center(
                       child: Text(
-                        'たこ焼き 🐙',
+                        'たこ焼き 🐙🔥',
                         style: TextStyle(color: CupertinoColors.systemGrey, fontSize: 16),
                       ),
                     );
