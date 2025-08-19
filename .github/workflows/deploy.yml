@@ -24,11 +24,13 @@ jobs:
           flutter --version
           flutter pub get
       
-      # Webビルド（詳細ログ付き）
+      # Webビルド（メモリ制限を緩和）
       - name: Build web
         run: |
           flutter clean
-          flutter build web --release --verbose --no-tree-shake-icons
+          flutter build web --release --no-tree-shake-icons
+        env:
+          FLUTTER_WEB_MAX_MEMORY: 4096
       
       # ビルド結果を確認
       - name: List build files
