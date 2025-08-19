@@ -12,9 +12,10 @@ jobs:
       # コードをチェックアウト
       - uses: actions/checkout@v4
       
-      # Flutterをセットアップ
+      # Flutterをセットアップ（バージョン固定）
       - uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.16.0'
           channel: 'stable'
           cache: true
       
