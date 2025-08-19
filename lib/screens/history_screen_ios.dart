@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/history_provider.dart';
 import '../models/trade_history.dart';
@@ -296,10 +297,13 @@ class _HistoryScreenIOSState extends State<HistoryScreenIOS> {
                   final history = _getFilteredHistory(provider);
                   
                   if (history.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        'たこ焼き 🐙🔥 デプロイテスト',
-                        style: TextStyle(color: CupertinoColors.systemGrey, fontSize: 16),
+                    return Container(
+                      color: Colors.red, // 背景を赤にして確認
+                      child: const Center(
+                        child: Text(
+                          'たこ焼き 🐙🔥 デプロイテスト',
+                          style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     );
                   }
