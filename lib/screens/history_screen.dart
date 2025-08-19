@@ -128,10 +128,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 final history = _getFilteredHistory(provider);
                 
                 if (history.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      '取引履歴がありません',
-                      style: TextStyle(color: Colors.grey, fontSize: 16),
+                  return Container(
+                    color: Colors.red, // 背景を赤にして確認
+                    child: const Center(
+                      child: Text(
+                        'たこ焼き 🐙🔥 Android版テスト',
+                        style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   );
                 }
