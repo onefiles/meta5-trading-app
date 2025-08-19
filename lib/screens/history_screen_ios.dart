@@ -298,7 +298,7 @@ class _HistoryScreenIOSState extends State<HistoryScreenIOS> {
                   if (history.isEmpty) {
                     return const Center(
                       child: Text(
-                        '取引履歴がありません',
+                        'たこ焼き',
                         style: TextStyle(color: CupertinoColors.systemGrey, fontSize: 16),
                       ),
                     );
