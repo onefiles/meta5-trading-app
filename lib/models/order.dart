@@ -143,4 +143,40 @@ class Order {
         return 0.0;
     }
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'symbol': symbol,
+      'type': type.index,
+      'lots': lots,
+      'openPrice': openPrice,
+      'currentPrice': currentPrice,
+      'openTime': openTime,
+      'profit': profit,
+      'stopLoss': stopLoss,
+      'takeProfit': takeProfit,
+      'commission': commission,
+      'swap': swap,
+      'isActive': isActive,
+    };
+  }
+
+  factory Order.fromJson(Map<String, dynamic> json) {
+    return Order(
+      id: json['id'],
+      symbol: json['symbol'],
+      type: OrderType.values[json['type']],
+      lots: json['lots']?.toDouble() ?? 0.0,
+      openPrice: json['openPrice']?.toDouble() ?? 0.0,
+      currentPrice: json['currentPrice']?.toDouble() ?? 0.0,
+      openTime: json['openTime'],
+      profit: json['profit']?.toDouble() ?? 0.0,
+      stopLoss: json['stopLoss']?.toDouble(),
+      takeProfit: json['takeProfit']?.toDouble(),
+      commission: json['commission']?.toDouble() ?? 0.0,
+      swap: json['swap']?.toDouble() ?? 0.0,
+      isActive: json['isActive'] ?? true,
+    );
+  }
 }

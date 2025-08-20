@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/trade_history.dart';
 import '../models/order.dart';
 import '../services/database_service.dart';
@@ -15,8 +17,13 @@ class HistoryProvider extends ChangeNotifier {
   
   Future<void> _initializeProvider() async {
     await loadHistory();
-    if (_history.isEmpty) {
+    // テストデータは初回のみロード
+    final prefs = await SharedPreferences.getInstance();
+    final hasLoadedBefore = prefs.getBool('hasLoadedHistoryBefore') ?? false;
+    
+    if (_history.isEmpty && !hasLoadedBefore) {
       _loadTestData();
+      await prefs.setBool('hasLoadedHistoryBefore', true);
     }
   }
   
@@ -59,19 +66,41 @@ class HistoryProvider extends ChangeNotifier {
     ];
     
     for (final history in testHistory) {
-      addHistory(history);
+      _history.add(history);
     }
+    // テストデータも保存
+    _saveHistoryToSharedPreferences();
   }
   
   Future<void> loadHistory() async {
     try {
+      final prefs = await SharedPreferences.getInstance();
+      final historyJson = prefs.getString('tradeHistory');
+      
       _history.clear();
-      // Web環境ではSQLiteが動作しないため、メモリ管理のみ
-      // _history.addAll(await _dbService.getTradeHistory());
-      print('HistoryProvider: History initialized (Web environment)');
+      
+      if (historyJson != null) {
+        final List<dynamic> historyList = json.decode(historyJson);
+        for (final historyMap in historyList) {
+          _history.add(TradeHistory.fromJson(historyMap));
+        }
+        print('HistoryProvider: Loaded ${_history.length} histories from SharedPreferences');
+      }
+      
       notifyListeners();
     } catch (e) {
       print('Error loading history: $e');
+    }
+  }
+  
+  Future<void> _saveHistoryToSharedPreferences() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final historyList = _history.map((history) => history.toJson()).toList();
+      await prefs.setString('tradeHistory', json.encode(historyList));
+      print('HistoryProvider: Saved ${_history.length} histories to SharedPreferences');
+    } catch (e) {
+      print('Error saving history to SharedPreferences: $e');
     }
   }
   
@@ -103,10 +132,11 @@ class HistoryProvider extends ChangeNotifier {
     try {
       print('HistoryProvider: Adding history - Symbol: ${history.symbol}, Type: ${history.type}, Profit: ${history.profit}');
       
-      // Web環境ではメモリのみで管理（SQLiteが動作しないため）
-      // await _dbService.insertTradeHistory(history);
-      
       _history.insert(0, history); // 新しい履歴を先頭に追加
+      
+      // SharedPreferencesに保存
+      await _saveHistoryToSharedPreferences();
+      
       notifyListeners();
       
       print('HistoryProvider: History added successfully. Total histories: ${_history.length}');

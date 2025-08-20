@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math';
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/order.dart';
 import '../models/trade_history.dart';
@@ -68,9 +69,12 @@ class OrderProvider extends ChangeNotifier {
   
   Future<void> _initializeProvider() async {
     await _loadAccountData(); // SharedPreferencesからアカウントデータを読み込み
-    await _loadOrdersFromDatabase();
+    await _loadOrdersFromSharedPreferences(); // SharedPreferencesからオーダーを読み込み
     await _loadHistory();
-    _loadTestData();
+    // テストデータは初回のみロード
+    if (_orders.isEmpty) {
+      _loadTestData();
+    }
   }
   
   // SharedPreferencesからアカウントデータを読み込み（Android版と同じ）
@@ -239,6 +243,7 @@ class OrderProvider extends ChangeNotifier {
       
       // Android版と同じ：注文をアクティブリストに追加
       _orders.add(order);
+      await _saveOrdersToSharedPreferences(); // オーダーを保存
       
       print('OrderProvider: Order added successfully. Total orders: ${_orders.length}');
       
@@ -256,15 +261,35 @@ class OrderProvider extends ChangeNotifier {
     }
   }
   
-  Future<void> _loadOrdersFromDatabase() async {
+  Future<void> _loadOrdersFromSharedPreferences() async {
     try {
-      // Web環境ではsqfliteが動作しないため、コメントアウト
-      // _orders.clear();
-      // _orders.addAll(await _db.getAllOrders());
+      final prefs = await SharedPreferences.getInstance();
+      final ordersJson = prefs.getString('orders');
+      
+      if (ordersJson != null) {
+        _orders.clear();
+        final List<dynamic> ordersList = json.decode(ordersJson);
+        for (final orderMap in ordersList) {
+          _orders.add(Order.fromJson(orderMap));
+        }
+        print('OrderProvider: Loaded ${_orders.length} orders from SharedPreferences');
+      }
+      
       _updateOrderProfits();
       notifyListeners();
     } catch (e) {
-      print('Error loading orders from database: $e');
+      print('Error loading orders from SharedPreferences: $e');
+    }
+  }
+  
+  Future<void> _saveOrdersToSharedPreferences() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final ordersList = _orders.map((order) => order.toJson()).toList();
+      await prefs.setString('orders', json.encode(ordersList));
+      print('OrderProvider: Saved ${_orders.length} orders to SharedPreferences');
+    } catch (e) {
+      print('Error saving orders to SharedPreferences: $e');
     }
   }
 
@@ -301,6 +326,9 @@ class OrderProvider extends ChangeNotifier {
       
       // オーダーをリストから削除
       _orders.removeWhere((o) => o.ticket == order.ticket);
+      
+      // SharedPreferencesに保存
+      await _saveOrdersToSharedPreferences();
       
       // 即座にUIを更新
       notifyListeners();
