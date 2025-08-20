@@ -883,8 +883,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                       Text(
                         item.description!,
                         style: const TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF007aff),
+                          fontSize: 12,
+                          color: Color(0xFF95979b), // 価格データと同じグレー色
                         ),
                       )
                   ],
