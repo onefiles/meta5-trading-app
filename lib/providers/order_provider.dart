@@ -355,9 +355,9 @@ class OrderProvider extends ChangeNotifier {
   Future<void> resetAccount() async {
     print('OrderProvider: Resetting account');
     
-    // Android版と同じ：残高とクレジットを0に設定
-    _balance = 0.0;
-    _credit = 0.0;
+    // 残高とクレジットを初期値に設定
+    _balance = 1000000.0; // 100万円
+    _credit = 200000.0;   // 20万円
     
     // SharedPreferencesに保存
     final prefs = await SharedPreferences.getInstance();

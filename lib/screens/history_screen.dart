@@ -840,10 +840,19 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Balance/Deposit行
-                    if (item.symbol == 'BALANCE')
+                    // Balance/Credit/取引の表示を分岐
+                    if (item.type == OrderType.balance)
                       const Text(
                         'Balance',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      )
+                    else if (item.type == OrderType.credit)
+                      const Text(
+                        'Credit',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -860,8 +869,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                         ),
                       ),
                     const SizedBox(height: 4),
-                    // 価格範囲またはDeposit
-                    if (item.symbol != 'BALANCE')
+                    // 価格範囲は取引のみ表示
+                    if (item.type != OrderType.balance && item.type != OrderType.credit)
                       Text(
                         '${_formatAndroidPrice(item.openPrice, item.symbol)} → ${_formatAndroidPrice(item.closePrice, item.symbol)}',
                         style: const TextStyle(
@@ -870,9 +879,9 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                         ),
                       )
                     else
-                      const Text(
-                        'Deposit',
-                        style: TextStyle(
+                      Text(
+                        item.type == OrderType.balance ? '入金' : 'クレジット入金',
+                        style: const TextStyle(
                           fontSize: 14,
                           color: Color(0xFF007aff),
                         ),
@@ -979,7 +988,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
           child: Column(
             children: [
               _buildStatRow('損益:', historyProvider.totalProfit),
-              _buildStatRow('クレジット:', orderProvider.credit),
+              _buildStatRow('入金:', historyProvider.totalDeposit),
               _buildStatRow('証拠金:', orderProvider.requiredMargin),
               _buildStatRow('出金:', 0.0), // TODO: 出金履歴を追加する場合
               _buildStatRow('残高:', orderProvider.balance),

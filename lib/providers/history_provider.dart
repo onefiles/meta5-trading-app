@@ -198,14 +198,25 @@ class HistoryProvider extends ChangeNotifier {
   
   // 総損益計算
   double get totalProfit {
-    return _history.fold(0.0, (sum, h) => sum + h.profit);
+    // Balance/Creditを除外して、純粋な取引損益のみ計算
+    return _history
+        .where((h) => h.type != OrderType.balance && h.type != OrderType.credit)
+        .fold(0.0, (sum, h) => sum + h.profit);
   }
   
-  // 勝率計算
+  // 総入金額（Balance/Creditの合計）
+  double get totalDeposit {
+    return _history
+        .where((h) => h.type == OrderType.balance || h.type == OrderType.credit)
+        .fold(0.0, (sum, h) => sum + h.profit);
+  }
+
+  // 勝率計算（取引のみ）
   double get winRate {
-    if (_history.isEmpty) return 0.0;
-    final winCount = _history.where((h) => h.profit > 0).length;
-    return (winCount / _history.length) * 100;
+    final trades = _history.where((h) => h.type != OrderType.balance && h.type != OrderType.credit).toList();
+    if (trades.isEmpty) return 0.0;
+    final winCount = trades.where((h) => h.profit > 0).length;
+    return (winCount / trades.length) * 100;
   }
   
   // 取引回数
