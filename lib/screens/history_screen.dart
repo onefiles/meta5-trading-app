@@ -878,14 +878,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                           color: Color(0xFF95979b),
                         ),
                       )
-                    else
-                      Text(
-                        item.type == OrderType.balance ? '入金' : 'クレジット入金',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF007aff),
-                        ),
-                      ),
+                    // Balance/Creditは下の説明不要
                   ],
                 ),
               ),
