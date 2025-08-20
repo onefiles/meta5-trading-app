@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import '../utils/platform_helper.dart';
 import '../providers/history_provider.dart';
+import '../providers/order_provider.dart';
 import '../models/trade_history.dart';
 import '../models/order.dart';
 import 'history_screen_ios.dart';
@@ -824,10 +825,12 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     final isProfit = item.profit >= 0;
     final profitColor = isProfit ? const Color(0xFF007aff) : const Color(0xFFe21d1d);
     
-    return Container(
-      padding: const EdgeInsets.all(16),
-      color: Colors.white,
-      child: Column(
+    return GestureDetector(
+      onLongPress: () => _showDeleteHistoryConfirmation(item),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        color: Colors.white,
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 上部：シンボル、タイプ、ロット数、時間
@@ -903,6 +906,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
             ],
           ),
         ],
+        ),
       ),
     );
   }
@@ -1014,6 +1018,84 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
       (Match m) => '${m[1]} ',
     );
     return formatted;
+  }
+
+  void _showDeleteHistoryConfirmation(TradeHistory history) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('取引履歴を削除'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('この取引履歴を削除しますか？'),
+              const SizedBox(height: 8),
+              Text('${history.symbol} ${history.typeText} ${history.lots}lot'),
+              Text('損益: ${_formatAmountWithSpaces(history.profit)}円'),
+              const SizedBox(height: 8),
+              const Text(
+                '注意: 損益が残高に戻されます',
+                style: TextStyle(
+                  color: Colors.orange,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('キャンセル'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await _deleteHistory(history);
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+              child: const Text('削除'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteHistory(TradeHistory history) async {
+    try {
+      final historyProvider = context.read<HistoryProvider>();
+      final orderProvider = context.read<OrderProvider>();
+
+      // 残高を戻す（損益を差し引く）
+      await orderProvider.revertTradeProfit(history.profit);
+      
+      // 履歴を削除
+      await historyProvider.removeHistory(history.id, history.profit);
+
+      // 成功メッセージ
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('取引履歴を削除し、${_formatAmountWithSpaces(history.profit)}円を残高に戻しました'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      // エラーメッセージ
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('履歴の削除に失敗しました'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
 }

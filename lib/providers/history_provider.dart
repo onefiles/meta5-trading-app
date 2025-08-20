@@ -144,6 +144,26 @@ class HistoryProvider extends ChangeNotifier {
       print('Error adding history: $e');
     }
   }
+
+  Future<void> removeHistory(String historyId, double profit) async {
+    try {
+      print('HistoryProvider: Removing history - ID: $historyId, Profit: $profit');
+      
+      // 履歴から削除
+      _history.removeWhere((history) => history.id == historyId);
+      
+      // SharedPreferencesに保存
+      await _saveHistoryToSharedPreferences();
+      
+      notifyListeners();
+      
+      print('HistoryProvider: History removed successfully. Total histories: ${_history.length}');
+      return;
+    } catch (e) {
+      print('Error removing history: $e');
+      throw e;
+    }
+  }
   
   Future<void> deleteHistory(String ticket) async {
     try {

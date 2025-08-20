@@ -397,6 +397,24 @@ class OrderProvider extends ChangeNotifier {
     return _balance;
   }
 
+  Future<void> revertTradeProfit(double profit) async {
+    try {
+      // 取引の損益を残高から差し引く（取引をなかったことにする）
+      _balance -= profit;
+      
+      // SharedPreferencesに保存
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setDouble('balance', _balance);
+      
+      notifyListeners();
+      
+      print('OrderProvider: Trade profit reverted - Amount: $profit, New Balance: $_balance');
+    } catch (e) {
+      print('Error reverting trade profit: $e');
+      throw e;
+    }
+  }
+
   @override
   void dispose() {
     stopPriceUpdates();
