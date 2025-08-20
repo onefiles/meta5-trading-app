@@ -17,6 +17,7 @@ class TradeHistory {
   final double? takeProfit;
   final double commission;
   final double swap;
+  final String? description; // カスタムメッセージ（Balance/Credit用）
   
   // Android版と同じ持続時間計算
   Duration get holdingDuration {
@@ -40,6 +41,7 @@ class TradeHistory {
     this.takeProfit,
     this.commission = 0.0,
     this.swap = 0.0,
+    this.description,
   }) : id = id ?? ticket ?? const Uuid().v4(),
        openTime = openTime ?? DateTime.now().millisecondsSinceEpoch,
        closeTime = closeTime ?? DateTime.now().millisecondsSinceEpoch;
@@ -136,6 +138,7 @@ class TradeHistory {
       'profit': profit,
       'openTime': openTime,
       'closeTime': closeTime,
+      'description': description,
     };
   }
 
@@ -150,6 +153,7 @@ class TradeHistory {
       profit: json['profit'],
       openTime: json['openTime'],
       closeTime: json['closeTime'],
+      description: json['description'],
     );
   }
 }

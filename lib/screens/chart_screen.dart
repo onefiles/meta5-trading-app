@@ -290,9 +290,9 @@ class _AccountManagementScreenState extends State<AccountManagementScreen> {
   }
 
   void _showDepositDialog() {
-    _showAmountDialog('入金', (amount) async {
+    _showAmountDialogWithDescription('入金', (amount, description) async {
       await context.read<OrderProvider>().addToBalance(amount);
-      _addBalanceHistory(amount, 'Balance');
+      _addBalanceHistoryWithDescription(amount, 'Balance', description);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('¥${_formatAmount(amount)}を入金しました')),
       );
@@ -300,7 +300,7 @@ class _AccountManagementScreenState extends State<AccountManagementScreen> {
   }
 
   void _showWithdrawDialog() {
-    _showAmountDialog('出金', (amount) async {
+    _showAmountDialogWithDescription('出金', (amount, description) async {
       final currentBalance = context.read<OrderProvider>().balance;
       if (amount > currentBalance) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -318,9 +318,9 @@ class _AccountManagementScreenState extends State<AccountManagementScreen> {
         setState(() {
           currentCredit = 0;
         });
-        _addBalanceHistory(-oldCredit, 'Balance'); // クレジット消失分も履歴に記録
+        _addBalanceHistoryWithDescription(-oldCredit, 'Balance', 'Credit cleared'); // クレジット消失分も履歴に記録
       }
-      _addBalanceHistory(-amount, 'Balance');
+      _addBalanceHistoryWithDescription(-amount, 'Balance', description);
       
       final message = oldCredit > 0
           ? '¥${_formatAmount(amount)}を出金し、クレジット¥${_formatAmount(oldCredit)}が消失しました'
@@ -333,13 +333,13 @@ class _AccountManagementScreenState extends State<AccountManagementScreen> {
   }
 
   void _showCreditDialog() {
-    _showAmountDialog('クレジット設定', (amount) async {
+    _showAmountDialogWithDescription('クレジット設定', (amount, description) async {
       // OrderProviderでクレジットを更新（全画面に即座反映）
       await context.read<OrderProvider>().updateCredit(amount);
       setState(() {
         currentCredit = amount;
       });
-      _addCreditHistory(amount);
+      _addCreditHistoryWithDescription(amount, description);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('クレジットを¥${_formatAmount(amount)}に設定しました')),
       );
@@ -489,6 +489,64 @@ class _AccountManagementScreenState extends State<AccountManagementScreen> {
     );
   }
 
+  void _showAmountDialogWithDescription(String title, Function(double, String) onConfirm) {
+    final amountController = TextEditingController();
+    final descriptionController = TextEditingController();
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: amountController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: '金額',
+                hintText: '金額を入力してください',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: descriptionController,
+              decoration: const InputDecoration(
+                labelText: 'メモ（任意）',
+                hintText: '例: Deposit: 8520111',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('キャンセル'),
+          ),
+          TextButton(
+            onPressed: () {
+              final amount = double.tryParse(amountController.text);
+              if (amount != null && amount > 0) {
+                final description = descriptionController.text.isEmpty 
+                    ? '${title}: ${amountController.text}'
+                    : descriptionController.text;
+                onConfirm(amount, description);
+                Navigator.pop(context);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('正しい金額を入力してください')),
+                );
+              }
+            },
+            child: const Text('実行'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _addBalanceHistory(double amount, String symbol) {
     // Android版と同じ：入金・出金履歴を記録
     final history = TradeHistory(
@@ -520,6 +578,42 @@ class _AccountManagementScreenState extends State<AccountManagementScreen> {
     );
     
     print('Adding credit history: $amount');
+    context.read<HistoryProvider>().addHistory(history);
+  }
+
+  void _addBalanceHistoryWithDescription(double amount, String symbol, String description) {
+    // カスタムメッセージ付きの入金・出金履歴を記録
+    final history = TradeHistory(
+      symbol: symbol,
+      type: OrderType.balance,
+      lots: 0.0,
+      openPrice: 0.0,
+      closePrice: 0.0,
+      profit: amount,
+      openTime: DateTime.now().millisecondsSinceEpoch,
+      closeTime: DateTime.now().millisecondsSinceEpoch,
+      description: description,
+    );
+    
+    print('Adding balance history with description: $amount for $symbol - $description');
+    context.read<HistoryProvider>().addHistory(history);
+  }
+
+  void _addCreditHistoryWithDescription(double amount, String description) {
+    // カスタムメッセージ付きのクレジット履歴を記録
+    final history = TradeHistory(
+      symbol: 'Credit',
+      type: OrderType.credit,
+      lots: 0.0,
+      openPrice: 0.0,
+      closePrice: 0.0,
+      profit: amount,
+      openTime: DateTime.now().millisecondsSinceEpoch,
+      closeTime: DateTime.now().millisecondsSinceEpoch,
+      description: description,
+    );
+    
+    print('Adding credit history with description: $amount - $description');
     context.read<HistoryProvider>().addHistory(history);
   }
 }

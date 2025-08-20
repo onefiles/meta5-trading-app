@@ -878,7 +878,15 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                           color: Color(0xFF95979b),
                         ),
                       )
-                    // Balance/Creditは下の説明不要
+                    // Balance/Creditのカスタムメッセージ表示
+                    else if (item.description != null && item.description!.isNotEmpty)
+                      Text(
+                        item.description!,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF007aff),
+                        ),
+                      )
                   ],
                 ),
               ),
