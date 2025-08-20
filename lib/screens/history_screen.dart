@@ -203,7 +203,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     return GestureDetector(
       onTap: () => _showHistoryDetails(history),
       child: Container(
-        padding: const EdgeInsets.only(left: 14, right: 14, top: 1, bottom: 1),
+        padding: const EdgeInsets.only(left: 8, right: 8, top: 1, bottom: 1),
         decoration: const BoxDecoration(
           color: Colors.white,
         ),
@@ -828,7 +828,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     return GestureDetector(
       onLongPress: () => _showDeleteHistoryConfirmation(item),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(8),
         color: Colors.white,
         child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -986,12 +986,12 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     return Consumer<OrderProvider>(
       builder: (context, orderProvider, child) {
         return Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(8),
           color: Colors.white,
           child: Column(
             children: [
               _buildStatRow('損益:', historyProvider.totalProfit),
-              _buildStatRow('入金:', historyProvider.totalDeposit),
+              _buildStatRow('クレジット:', historyProvider.totalDeposit),
               _buildStatRow('証拠金:', orderProvider.requiredMargin),
               _buildStatRow('出金:', 0.0), // TODO: 出金履歴を追加する場合
               _buildStatRow('残高:', orderProvider.balance),
