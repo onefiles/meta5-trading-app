@@ -26,13 +26,16 @@ class HistoryScreen extends StatefulWidget {
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
 
-class _HistoryScreenState extends State<HistoryScreen> {
+class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProviderStateMixin {
   String _selectedPeriod = 'week';
   String _selectedSymbol = '全て';
   String _selectedType = '全て';
   DateTime? _customStartDate;
   DateTime? _customEndDate;
   SortType _sortType = SortType.dateDesc;
+  
+  // タブのインデックス管理
+  int _selectedTabIndex = 1; // 初期値は'week'なので1
   
   final List<String> _symbols = ['全て', 'GBPJPY', 'BTCJPY', 'XAUUSD', 'EURUSD', 'USDJPY'];
   final List<String> _types = ['全て', '買い', '売り'];
@@ -69,15 +72,42 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     color: const Color(0xFFF0F0F0), // 検索バーと同じグレー背景
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: Row(
+                  child: Stack(
                     children: [
-                      _buildSegmentButton('日', 'day', isFirst: true),
-                      _buildVerticalDivider(),
-                      _buildSegmentButton('週', 'week'),
-                      _buildVerticalDivider(),
-                      _buildSegmentButton('月', 'month'),
-                      _buildVerticalDivider(),
-                      _buildSegmentButton('カスタム', 'custom', isLast: true),
+                      // スライダー（白い背景）
+                      AnimatedPositioned(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        left: _selectedTabIndex * 60.0, // 240 / 4 = 60
+                        top: 2,
+                        child: Container(
+                          width: 58, // 60 - 2 (padding)
+                          height: 28, // 32 - 4 (padding)
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(4),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 3,
+                                offset: const Offset(0, 1),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      // タブボタン
+                      Row(
+                        children: [
+                          _buildSegmentButton('日', 'day', 0),
+                          _buildVerticalDivider(),
+                          _buildSegmentButton('週', 'week', 1),
+                          _buildVerticalDivider(),
+                          _buildSegmentButton('月', 'month', 2),
+                          _buildVerticalDivider(),
+                          _buildSegmentButton('カスタム', 'custom', 3),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -893,14 +923,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return DateFormat('yyyy.MM.dd HH:mm:ss').format(dateTime);
   }
 
-  // セグメント化されたボタンを構築（Android版と同じ）
-  Widget _buildSegmentButton(String text, String period, {bool isFirst = false, bool isLast = false}) {
+  // セグメント化されたボタンを構築（スライドアニメーション対応）
+  Widget _buildSegmentButton(String text, String period, int index) {
     final isSelected = _selectedPeriod == period;
     return Expanded(
       child: GestureDetector(
         onTap: () {
           setState(() {
             _selectedPeriod = period;
+            _selectedTabIndex = index;
             if (period == 'custom') {
               _showDateRangePicker();
             }
@@ -908,10 +939,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         },
         child: Container(
           height: 30, // 枠の高さに合わせて調整
-          decoration: BoxDecoration(
-            color: isSelected ? Colors.white : Colors.transparent, // 選択時のみ白背景
-            borderRadius: BorderRadius.circular(4), // 全体を角丸に（四角形ではなく）
-          ),
+          color: Colors.transparent, // 背景は透明（スライダーが後ろにあるため）
           child: Center(
             child: Text(
               text,
