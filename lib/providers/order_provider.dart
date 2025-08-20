@@ -69,12 +69,20 @@ class OrderProvider extends ChangeNotifier {
   
   Future<void> _initializeProvider() async {
     await _loadAccountData(); // SharedPreferencesからアカウントデータを読み込み
+    
+    // 一度だけテストポジションをクリア（既存ユーザー対応）
+    final prefs = await SharedPreferences.getInstance();
+    final hasClearedTestPositions = prefs.getBool('hasClearedTestPositions') ?? false;
+    
+    if (!hasClearedTestPositions) {
+      await prefs.remove('orders'); // テストポジションをクリア
+      await prefs.setBool('hasClearedTestPositions', true);
+      print('OrderProvider: Test positions cleared for existing user');
+    }
+    
     await _loadOrdersFromSharedPreferences(); // SharedPreferencesからオーダーを読み込み
     await _loadHistory();
-    // テストデータは初回のみロード
-    if (_orders.isEmpty) {
-      _loadTestData();
-    }
+    // テストデータのロードは無効化
   }
   
   // SharedPreferencesからアカウントデータを読み込み（Android版と同じ）
@@ -103,32 +111,8 @@ class OrderProvider extends ChangeNotifier {
   }
   
   void _loadTestData() {
-    // データベースが空の場合のみテストデータを追加
-    if (_orders.isEmpty) {
-      final order1 = Order(
-        ticket: DateTime.now().millisecondsSinceEpoch.toString(),
-        symbol: 'GBPJPY',
-        type: OrderType.buy,
-        lots: 0.50,
-        openPrice: 195.123,
-        currentPrice: 195.126,
-        openTime: DateTime.now().subtract(const Duration(hours: 2)).millisecondsSinceEpoch,
-      );
-      
-      final order2 = Order(
-        ticket: (DateTime.now().millisecondsSinceEpoch + 1).toString(),
-        symbol: 'BTCJPY',
-        type: OrderType.sell,
-        lots: 0.10,
-        openPrice: 7500000,
-        currentPrice: 7500000,
-        openTime: DateTime.now().subtract(const Duration(minutes: 30)).millisecondsSinceEpoch,
-      );
-      
-      // データベースに保存
-      addOrder(order1);
-      addOrder(order2);
-    }
+    // テストデータは無効化（既存のポジション永続化を使用）
+    print('OrderProvider: Test data loading disabled - using persistent orders');
   }
 
   Future<void> _loadHistory() async {
@@ -393,6 +377,19 @@ class OrderProvider extends ChangeNotifier {
     return _credit;
   }
   
+  // テストポジションをクリアする（開発用）
+  Future<void> clearTestPositions() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('orders'); // 保存されているポジションをクリア
+      _orders.clear();
+      notifyListeners();
+      print('OrderProvider: All test positions cleared');
+    } catch (e) {
+      print('Error clearing test positions: $e');
+    }
+  }
+
   // 残高値を取得（他の画面からも呼び出し可能）
   Future<double> getCurrentBalance() async {
     final prefs = await SharedPreferences.getInstance();
