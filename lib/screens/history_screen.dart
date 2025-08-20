@@ -203,7 +203,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     return GestureDetector(
       onTap: () => _showHistoryDetails(history),
       child: Container(
-        padding: const EdgeInsets.only(left: 8, right: 8, top: 1, bottom: 1),
+        padding: const EdgeInsets.only(left: 8, right: 8, top: 0, bottom: 0),
         decoration: const BoxDecoration(
           color: Colors.white,
         ),
