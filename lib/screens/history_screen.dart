@@ -970,19 +970,23 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
   }
 
   // 統計情報セクションを構築
-  Widget _buildStatisticsSection(HistoryProvider provider) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      color: Colors.white,
-      child: Column(
-        children: [
-          _buildStatRow('損益:', provider.totalProfit),
-          _buildStatRow('クレジット:', 0.0),
-          _buildStatRow('証拠金:', 100000.0),
-          _buildStatRow('出金:', 0.0),
-          _buildStatRow('残高:', 101616.0), // Android版と同じ値
-        ],
-      ),
+  Widget _buildStatisticsSection(HistoryProvider historyProvider) {
+    return Consumer<OrderProvider>(
+      builder: (context, orderProvider, child) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          color: Colors.white,
+          child: Column(
+            children: [
+              _buildStatRow('損益:', historyProvider.totalProfit),
+              _buildStatRow('クレジット:', orderProvider.credit),
+              _buildStatRow('証拠金:', orderProvider.requiredMargin),
+              _buildStatRow('出金:', 0.0), // TODO: 出金履歴を追加する場合
+              _buildStatRow('残高:', orderProvider.balance),
+            ],
+          ),
+        );
+      },
     );
   }
 
