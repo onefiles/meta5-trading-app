@@ -884,7 +884,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                         item.description!,
                         style: const TextStyle(
                           fontSize: 16, // Balance/Creditと同じサイズ
-                          color: Color(0xFF95979b), // 価格データと同じグレー色
+                          color: Color(0xFF525252), // グレーと黒の中間色
                         ),
                       )
                   ],
