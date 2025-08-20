@@ -823,7 +823,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
   // Android版と同じ履歴アイテムを構築
   Widget _buildAndroidHistoryItem(TradeHistory item) {
     final isProfit = item.profit >= 0;
-    final profitColor = isProfit ? const Color(0xFF007aff) : const Color(0xFFe21d1d);
+    final profitColor = isProfit ? const Color(0xFF1777e7) : const Color(0xFFc74932);
     
     return GestureDetector(
       onLongPress: () => _showDeleteHistoryConfirmation(item),
