@@ -1011,9 +1011,10 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
           Text(
             label,
             style: const TextStyle(
-              fontSize: 14,
-              color: Color(0xFF666666),
+              fontSize: 16,
+              color: Color(0xFF686868),
               fontFamily: 'sans-serif',
+              fontWeight: FontWeight.bold,
             ),
           ),
           Text(
