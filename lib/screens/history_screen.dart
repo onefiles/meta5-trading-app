@@ -66,11 +66,12 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
               children: [
                 // 期間選択ボタン（1つの枠に縦線区切り）
                 Container(
-                  height: 32,
-                  width: 240, // 横幅を制限
+                  height: 36,
+                  width: 244, // 横幅を制限（padding分を追加）
+                  padding: const EdgeInsets.all(2), // 内側の余白を追加
                   decoration: BoxDecoration(
                     color: const Color(0xFFF0F0F0), // 検索バーと同じグレー背景
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Stack(
                     children: [
@@ -79,13 +80,13 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                         duration: const Duration(milliseconds: 300),
                         curve: Curves.easeInOut,
                         left: _selectedTabIndex * 60.0, // 240 / 4 = 60
-                        top: 2,
+                        top: 0, // paddingがあるので0でOK
                         child: Container(
-                          width: 58, // 60 - 2 (padding)
-                          height: 28, // 32 - 4 (padding)
+                          width: 60, // 各タブの幅
+                          height: 32, // padding内の高さ全体
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(6),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.1),
@@ -938,7 +939,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
           });
         },
         child: Container(
-          height: 30, // 枠の高さに合わせて調整
+          height: 32, // padding内の高さに合わせて調整
           color: Colors.transparent, // 背景は透明（スライダーが後ろにあるため）
           child: Center(
             child: Text(
