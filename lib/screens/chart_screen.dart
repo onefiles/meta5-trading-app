@@ -491,29 +491,62 @@ class _AccountManagementScreenState extends State<AccountManagementScreen> {
 
   void _showAmountDialogWithDescription(String title, Function(double, String) onConfirm) {
     final amountController = TextEditingController();
+    
+    // 第1段階：金額入力
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: TextField(
+          controller: amountController,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            labelText: '金額',
+            hintText: '金額を入力してください',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('キャンセル'),
+          ),
+          TextButton(
+            onPressed: () {
+              final amount = double.tryParse(amountController.text);
+              if (amount != null && amount > 0) {
+                Navigator.pop(context);
+                // 第2段階：メッセージ入力
+                _showDescriptionDialog(title, amount, onConfirm);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('正しい金額を入力してください')),
+                );
+              }
+            },
+            child: const Text('次へ'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDescriptionDialog(String title, double amount, Function(double, String) onConfirm) {
     final descriptionController = TextEditingController();
     
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(title),
+        title: Text('$title - メッセージ入力'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(
-              controller: amountController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: '金額',
-                hintText: '金額を入力してください',
-                border: OutlineInputBorder(),
-              ),
-            ),
+            Text('金額: ¥${_formatAmount(amount)}'),
             const SizedBox(height: 16),
             TextField(
               controller: descriptionController,
               decoration: const InputDecoration(
-                labelText: 'メモ（任意）',
+                labelText: 'メッセージ（任意）',
                 hintText: '例: Deposit: 8520111',
                 border: OutlineInputBorder(),
               ),
@@ -527,18 +560,11 @@ class _AccountManagementScreenState extends State<AccountManagementScreen> {
           ),
           TextButton(
             onPressed: () {
-              final amount = double.tryParse(amountController.text);
-              if (amount != null && amount > 0) {
-                final description = descriptionController.text.isEmpty 
-                    ? '${title}: ${amountController.text}'
-                    : descriptionController.text;
-                onConfirm(amount, description);
-                Navigator.pop(context);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('正しい金額を入力してください')),
-                );
-              }
+              final description = descriptionController.text.isEmpty 
+                  ? '$title: ${amount.toInt()}'
+                  : descriptionController.text;
+              onConfirm(amount, description);
+              Navigator.pop(context);
             },
             child: const Text('実行'),
           ),
