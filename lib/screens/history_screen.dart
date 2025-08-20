@@ -1013,6 +1013,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
             style: const TextStyle(
               fontSize: 14,
               color: Color(0xFF666666),
+              fontFamily: 'sans-serif',
             ),
           ),
           Text(
@@ -1021,6 +1022,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
               fontSize: 14,
               color: Colors.black,
               fontWeight: FontWeight.bold,
+              fontFamily: 'sans-serif',
             ),
           ),
         ],
