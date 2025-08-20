@@ -828,7 +828,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     return GestureDetector(
       onLongPress: () => _showDeleteHistoryConfirmation(item),
       child: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         color: Colors.white,
         child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -870,7 +870,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                           color: Color(0xFF525252),
                         ),
                       ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 1),
                     // 価格範囲は取引のみ表示
                     if (item.type != OrderType.balance && item.type != OrderType.credit)
                       Text(
