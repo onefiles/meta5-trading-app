@@ -845,18 +845,20 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                       const Text(
                         'Balance',
                         style: TextStyle(
+                          fontFamily: 'Roboto Condensed',
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: Color(0xFF000000),
                         ),
                       )
                     else if (item.type == OrderType.credit)
                       const Text(
                         'Credit',
                         style: TextStyle(
+                          fontFamily: 'Roboto Condensed',
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: Color(0xFF000000),
                         ),
                       )
                     else
