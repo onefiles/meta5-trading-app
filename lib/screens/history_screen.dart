@@ -64,52 +64,51 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
             color: Colors.white,
             padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
             child: Container(
-                  height: 36,
-                  width: 244, // 横幅を制限（padding分を追加）
-                  padding: const EdgeInsets.all(2), // 内側の余白を追加
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF0F0F0), // 検索バーと同じグレー背景
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Stack(
-                    children: [
-                      // スライダー（白い背景）
-                      AnimatedPositioned(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                        left: _selectedTabIndex * 60.0, // 240 / 4 = 60
-                        top: 0, // paddingがあるので0でOK
-                        child: Container(
-                          width: 60, // 各タブの幅
-                          height: 32, // padding内の高さ全体
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(6),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 3,
-                                offset: const Offset(0, 1),
-                              ),
-                            ],
+              height: 36,
+              width: 244, // 横幅を制限（padding分を追加）
+              padding: const EdgeInsets.all(2), // 内側の余白を追加
+              decoration: BoxDecoration(
+                color: const Color(0xFFF0F0F0), // 検索バーと同じグレー背景
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Stack(
+                children: [
+                  // スライダー（白い背景）
+                  AnimatedPositioned(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    left: _selectedTabIndex * 60.0, // 240 / 4 = 60
+                    top: 0, // paddingがあるので0でOK
+                    child: Container(
+                      width: 60, // 各タブの幅
+                      height: 32, // padding内の高さ全体
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(6),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 3,
+                            offset: const Offset(0, 1),
                           ),
-                        ),
-                      ),
-                      // タブボタン
-                      Row(
-                        children: [
-                          _buildSegmentButton('日', 'day', 0),
-                          _buildVerticalDivider(),
-                          _buildSegmentButton('週', 'week', 1),
-                          _buildVerticalDivider(),
-                          _buildSegmentButton('月', 'month', 2),
-                          _buildVerticalDivider(),
-                          _buildSegmentButton('カスタム', 'custom', 3),
                         ],
                       ),
+                    ),
+                  ),
+                  // タブボタン
+                  Row(
+                    children: [
+                      _buildSegmentButton('日', 'day', 0),
+                      _buildVerticalDivider(),
+                      _buildSegmentButton('週', 'week', 1),
+                      _buildVerticalDivider(),
+                      _buildSegmentButton('月', 'month', 2),
+                      _buildVerticalDivider(),
+                      _buildSegmentButton('カスタム', 'custom', 3),
                     ],
                   ),
-                ),
+                ],
+              ),
             ),
           ),
           
