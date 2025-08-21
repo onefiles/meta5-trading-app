@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../utils/platform_helper.dart';
 import '../providers/history_provider.dart';
 import '../providers/order_provider.dart';
+import '../providers/font_provider.dart';
 import '../models/trade_history.dart';
 import '../models/order.dart';
 import 'history_screen_ios.dart';
@@ -828,9 +829,11 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     final isProfit = item.profit >= 0;
     final profitColor = isProfit ? const Color(0xFF1777e7) : const Color(0xFFc74932);
     
-    return GestureDetector(
-      onLongPress: () => _showDeleteHistoryConfirmation(item),
-      child: Container(
+    return Consumer<FontProvider>(
+      builder: (context, fontProvider, child) {
+        return GestureDetector(
+          onLongPress: () => _showDeleteHistoryConfirmation(item),
+          child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         color: Colors.white,
         child: Column(
@@ -878,10 +881,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                           ),
                           Text(
                             '${item.type == OrderType.buy ? 'buy' : 'sell'} ${item.lots.toStringAsFixed(2)}',
-                            style: TextStyle(
-                              fontFamily: 'Roboto Condensed, sans-serif',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
+                            style: fontProvider.getPositionTextStyle(
                               color: item.type == OrderType.buy 
                                 ? const Color(0xFF1777e7)  // buyは青色
                                 : const Color(0xFFc74932), // sellは赤色
@@ -894,11 +894,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                     if (item.type != OrderType.balance && item.type != OrderType.credit)
                       Text(
                         '${_formatAndroidPrice(item.openPrice, item.symbol)} → ${_formatAndroidPrice(item.closePrice, item.symbol)}',
-                        style: const TextStyle(
-                          fontFamily: 'Roboto Condensed, sans-serif',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF95979b),
+                        style: fontProvider.getPriceTextStyle(
+                          color: const Color(0xFF95979b),
                         ),
                       )
                     // Balance/Creditのカスタムメッセージ表示
@@ -928,10 +925,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                   // 損益
                   Text(
                     _formatAndroidProfit(item.profit),
-                    style: TextStyle(
-                      fontFamily: 'Roboto Condensed, sans-serif',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
+                    style: fontProvider.getProfitTextStyle(
                       color: profitColor,
                     ),
                   ),
@@ -941,7 +935,9 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
           ),
         ],
         ),
-      ),
+          ),
+        );
+      },
     );
   }
 
