@@ -89,6 +89,7 @@ class FontProvider extends ChangeNotifier {
     if (fontFamily != null) {
       _positionFontFamily = _mapFontFamily(fontFamily);
       await prefs.setString('position_font_family', _positionFontFamily);
+      print('DEBUG: Updated position font family to: $_positionFontFamily');
     }
     if (fontSize != null) {
       _positionFontSize = fontSize;
@@ -205,18 +206,16 @@ class FontProvider extends ChangeNotifier {
   
   // フォント名をマッピング（Web版対応）
   String _mapFontFamily(String fontFamily) {
-    switch (fontFamily) {
-      case 'sans-serif':
-        return 'Roboto, sans-serif';
-      case 'sans-serif-medium':
-        return 'Roboto, sans-serif';
-      case 'sans-serif-condensed':
-        return 'Roboto Condensed, sans-serif';
-      case 'Roboto Condensed':
-        return 'Roboto Condensed, sans-serif';
-      default:
-        return 'Roboto Condensed, sans-serif';
-    }
+    print('DEBUG: _mapFontFamily input: $fontFamily');
+    final result = switch (fontFamily) {
+      'sans-serif' => 'Roboto, sans-serif',
+      'sans-serif-medium' => 'Roboto, sans-serif', // Mediumウェイトで表現
+      'sans-serif-condensed' => 'Roboto Condensed, sans-serif',
+      'Roboto Condensed' => 'Roboto Condensed, sans-serif',
+      _ => 'Roboto Condensed, sans-serif',
+    };
+    print('DEBUG: _mapFontFamily output: $result');
+    return result;
   }
   
   // TextStyleを生成するヘルパーメソッド
