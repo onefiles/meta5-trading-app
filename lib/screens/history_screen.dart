@@ -848,9 +848,9 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                       const Text(
                         'Balance',
                         style: TextStyle(
-                          fontFamily: 'Roboto Condensed',
+                          fontFamily: 'Roboto Condensed, sans-serif',
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w700,
                           color: Color(0xFF000000),
                         ),
                       )
@@ -858,9 +858,9 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                       const Text(
                         'Credit',
                         style: TextStyle(
-                          fontFamily: 'Roboto Condensed',
+                          fontFamily: 'Roboto Condensed, sans-serif',
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w700,
                           color: Color(0xFF000000),
                         ),
                       )
@@ -870,18 +870,18 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                           Text(
                             '${item.symbol}, ',
                             style: const TextStyle(
-                              fontFamily: 'Roboto Condensed',
+                              fontFamily: 'Roboto Condensed, sans-serif',
                               fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w700,
                               color: Color(0xFF000000),
                             ),
                           ),
                           Text(
                             '${item.type == OrderType.buy ? 'buy' : 'sell'} ${item.lots.toStringAsFixed(2)}',
                             style: TextStyle(
-                              fontFamily: 'Roboto Condensed',
+                              fontFamily: 'Roboto Condensed, sans-serif',
                               fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w700,
                               color: item.type == OrderType.buy 
                                 ? const Color(0xFF1777e7)  // buyは青色
                                 : const Color(0xFFc74932), // sellは赤色
@@ -895,9 +895,9 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                       Text(
                         '${_formatAndroidPrice(item.openPrice, item.symbol)} → ${_formatAndroidPrice(item.closePrice, item.symbol)}',
                         style: const TextStyle(
-                          fontFamily: 'Roboto Condensed',
+                          fontFamily: 'Roboto Condensed, sans-serif',
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w700,
                           color: Color(0xFF95979b),
                         ),
                       )
@@ -929,9 +929,9 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                   Text(
                     _formatAndroidProfit(item.profit),
                     style: TextStyle(
-                      fontFamily: 'Roboto Condensed',
+                      fontFamily: 'Roboto Condensed, sans-serif',
                       fontSize: 14,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w700,
                       color: profitColor,
                     ),
                   ),
