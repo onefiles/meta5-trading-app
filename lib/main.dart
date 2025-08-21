@@ -8,6 +8,7 @@ import 'providers/order_provider.dart';
 import 'providers/price_provider.dart';
 import 'providers/history_provider.dart';
 import 'providers/alert_provider.dart';
+import 'providers/font_provider.dart';
 import 'services/notification_service.dart';
 
 void main() {
@@ -37,6 +38,7 @@ class Meta5App extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PriceProvider()),
         ChangeNotifierProvider(create: (_) => HistoryProvider()),
         ChangeNotifierProvider(create: (_) => AlertProvider()),
+        ChangeNotifierProvider(create: (_) => FontProvider()),
       ],
       child: isIOS
           ? CupertinoApp(

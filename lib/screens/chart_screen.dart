@@ -9,6 +9,7 @@ import '../models/trade_history.dart';
 import '../models/order.dart';
 import '../services/profit_calculator.dart';
 import 'chart_screen_ios.dart';
+import 'font_settings_screen.dart';
 
 class ChartScreen extends StatelessWidget {
   const ChartScreen({Key? key}) : super(key: key);
@@ -87,8 +88,51 @@ class _AccountManagementScreenState extends State<AccountManagementScreen> {
             _buildCreditBalanceSection(),
             const SizedBox(height: 16),
             
+            // フォント設定
+            _buildFontSection(),
+            const SizedBox(height: 16),
+            
             // 設定・リセット
             _buildSettingsSection(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFontSection() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'フォント設定',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const FontSettingsScreen(),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.purple,
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text('フォント設定'),
+              ),
+            ),
           ],
         ),
       ),
