@@ -20,7 +20,7 @@ class FontProvider extends ChangeNotifier {
   bool _positionIsBold = true;
   
   // 価格データの設定
-  String _priceFontFamily = 'Roboto Condensed';
+  String _priceFontFamily = 'Roboto Medium';
   int _priceFontSize = 16;
   int _priceFontWeight = 700;
   bool _priceIsBold = true;
@@ -38,7 +38,7 @@ class FontProvider extends ChangeNotifier {
   bool _symbolIsBold = true;
   
   // 取引時間の設定
-  String _timeFontFamily = 'Roboto Condensed';
+  String _timeFontFamily = 'Roboto Light';
   int _timeFontSize = 12;
   int _timeFontWeight = 400;
   bool _timeIsBold = false;
@@ -92,32 +92,32 @@ class FontProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       
       // 既存データの移行処理（, sans-serifを削除）
-      String cleanFontFamily(String? family) {
-        if (family == null) return 'Roboto Condensed';
+      String cleanFontFamily(String? family, String defaultFamily) {
+        if (family == null) return defaultFamily;
         return family.replaceAll(', sans-serif', '');
       }
       
-      _positionFontFamily = cleanFontFamily(prefs.getString('position_font_family'));
+      _positionFontFamily = cleanFontFamily(prefs.getString('position_font_family'), 'Roboto Condensed');
       _positionFontSize = prefs.getInt('position_font_size') ?? 14;
       _positionFontWeight = prefs.getInt('position_font_weight') ?? 700;
       _positionIsBold = prefs.getBool('position_is_bold') ?? true;
       
-      _priceFontFamily = cleanFontFamily(prefs.getString('price_font_family'));
+      _priceFontFamily = cleanFontFamily(prefs.getString('price_font_family'), 'Roboto Medium');
       _priceFontSize = prefs.getInt('price_font_size') ?? 16;
       _priceFontWeight = prefs.getInt('price_font_weight') ?? 700;
       _priceIsBold = prefs.getBool('price_is_bold') ?? true;
       
-      _profitFontFamily = cleanFontFamily(prefs.getString('profit_font_family'));
+      _profitFontFamily = cleanFontFamily(prefs.getString('profit_font_family'), 'Roboto Condensed');
       _profitFontSize = prefs.getInt('profit_font_size') ?? 14;
       _profitFontWeight = prefs.getInt('profit_font_weight') ?? 700;
       _profitIsBold = prefs.getBool('profit_is_bold') ?? true;
       
-      _symbolFontFamily = cleanFontFamily(prefs.getString('symbol_font_family'));
+      _symbolFontFamily = cleanFontFamily(prefs.getString('symbol_font_family'), 'Roboto Condensed');
       _symbolFontSize = prefs.getInt('symbol_font_size') ?? 16;
       _symbolFontWeight = prefs.getInt('symbol_font_weight') ?? 700;
       _symbolIsBold = prefs.getBool('symbol_is_bold') ?? true;
       
-      _timeFontFamily = cleanFontFamily(prefs.getString('time_font_family'));
+      _timeFontFamily = cleanFontFamily(prefs.getString('time_font_family'), 'Roboto Light');
       _timeFontSize = prefs.getInt('time_font_size') ?? 12;
       _timeFontWeight = prefs.getInt('time_font_weight') ?? 400;
       _timeIsBold = prefs.getBool('time_is_bold') ?? false;
@@ -133,6 +133,21 @@ class FontProvider extends ChangeNotifier {
     } catch (e) {
       print('Error loading font settings: $e');
     }
+  }
+  
+  // フォント設定のリセット（テスト用）
+  Future<void> resetFontSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear(); // 全設定をクリア
+    
+    // デフォルト値に戻す
+    _positionFontFamily = 'Roboto Condensed';
+    _priceFontFamily = 'Roboto Medium';
+    _profitFontFamily = 'Roboto Condensed';
+    _symbolFontFamily = 'Roboto Condensed';
+    _timeFontFamily = 'Roboto Light';
+    
+    notifyListeners();
   }
   
   // ポジション方向の設定更新
@@ -302,76 +317,6 @@ class FontProvider extends ChangeNotifier {
       _timeColor = color;
       await prefs.setString('time_color', color);
     }
-    
-    notifyListeners();
-  }
-  
-  // フォント設定のリセット
-  Future<void> resetFontSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    
-    // デフォルト値に戻す
-    _positionFontFamily = 'Roboto Condensed';
-    _positionFontSize = 14;
-    _positionFontWeight = 700;
-    _positionIsBold = true;
-    _positionColor = '#000000';
-    
-    _priceFontFamily = 'Roboto Condensed';
-    _priceFontSize = 16;
-    _priceFontWeight = 700;
-    _priceIsBold = true;
-    _priceColor = '#95979b';
-    
-    _profitFontFamily = 'Roboto Condensed';
-    _profitFontSize = 14;
-    _profitFontWeight = 700;
-    _profitIsBold = true;
-    _profitColor = '#1777e7';
-    
-    _symbolFontFamily = 'Roboto Condensed';
-    _symbolFontSize = 16;
-    _symbolFontWeight = 700;
-    _symbolIsBold = true;
-    _symbolColor = '#000000';
-    
-    _timeFontFamily = 'Roboto Condensed';
-    _timeFontSize = 12;
-    _timeFontWeight = 400;
-    _timeIsBold = false;
-    _timeColor = '#666666';
-    
-    // SharedPreferencesからフォント設定を削除
-    await prefs.remove('position_font_family');
-    await prefs.remove('position_font_size');
-    await prefs.remove('position_font_weight');
-    await prefs.remove('position_is_bold');
-    
-    await prefs.remove('price_font_family');
-    await prefs.remove('price_font_size');
-    await prefs.remove('price_font_weight');
-    await prefs.remove('price_is_bold');
-    
-    await prefs.remove('profit_font_family');
-    await prefs.remove('profit_font_size');
-    await prefs.remove('profit_font_weight');
-    await prefs.remove('profit_is_bold');
-    await prefs.remove('profit_color');
-    
-    await prefs.remove('symbol_font_family');
-    await prefs.remove('symbol_font_size');
-    await prefs.remove('symbol_font_weight');
-    await prefs.remove('symbol_is_bold');
-    await prefs.remove('symbol_color');
-    
-    await prefs.remove('time_font_family');
-    await prefs.remove('time_font_size');
-    await prefs.remove('time_font_weight');
-    await prefs.remove('time_is_bold');
-    await prefs.remove('time_color');
-    
-    await prefs.remove('position_color');
-    await prefs.remove('price_color');
     
     notifyListeners();
   }
