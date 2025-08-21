@@ -33,7 +33,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
   String _selectedType = '全て';
   DateTime? _customStartDate;
   DateTime? _customEndDate;
-  SortType _sortType = SortType.dateDesc;
+  SortType _sortType = SortType.dateAsc;
   
   // タブのインデックス管理
   int _selectedTabIndex = 1; // 初期値は'week'なので1
@@ -614,8 +614,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
             ),
             const SizedBox(height: 16),
             
-            _buildSortOption('日付 (新しい順)', SortType.dateDesc, Icons.access_time),
             _buildSortOption('日付 (古い順)', SortType.dateAsc, Icons.access_time),
+            _buildSortOption('日付 (新しい順)', SortType.dateDesc, Icons.access_time),
             _buildSortOption('損益 (高い順)', SortType.profitDesc, Icons.trending_up),
             _buildSortOption('損益 (低い順)', SortType.profitAsc, Icons.trending_down),
             _buildSortOption('通貨ペア (A-Z)', SortType.symbolAsc, Icons.sort_by_alpha),
