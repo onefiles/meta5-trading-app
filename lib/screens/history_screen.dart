@@ -881,7 +881,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                             style: TextStyle(
                               fontFamily: 'Roboto Condensed, sans-serif',
                               fontSize: 16,
-                              fontWeight: FontWeight.normal,
+                              fontWeight: FontWeight.w700,
                               color: item.type == OrderType.buy 
                                 ? const Color(0xFF1777e7)  // buyは青色
                                 : const Color(0xFFc74932), // sellは赤色
