@@ -865,14 +865,29 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                         ),
                       )
                     else
-                      Text(
-                        '${item.symbol}, ${item.type == OrderType.buy ? 'buy' : 'sell'} ${item.lots.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          fontFamily: 'Roboto Condensed',
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF000000),
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            '${item.symbol}, ',
+                            style: const TextStyle(
+                              fontFamily: 'Roboto Condensed',
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF000000),
+                            ),
+                          ),
+                          Text(
+                            '${item.type == OrderType.buy ? 'buy' : 'sell'} ${item.lots.toStringAsFixed(2)}',
+                            style: TextStyle(
+                              fontFamily: 'Roboto Condensed',
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: item.type == OrderType.buy 
+                                ? const Color(0xFF1777e7)  // buyは青色
+                                : const Color(0xFFc74932), // sellは赤色
+                            ),
+                          ),
+                        ],
                       ),
                     const SizedBox(height: 1),
                     // 価格範囲は取引のみ表示
@@ -914,7 +929,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                   Text(
                     _formatAndroidProfit(item.profit),
                     style: TextStyle(
-                      fontSize: 16,
+                      fontFamily: 'Roboto Condensed',
+                      fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: profitColor,
                     ),
