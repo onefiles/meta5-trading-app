@@ -276,16 +276,18 @@ class FontSettingsScreen extends StatelessWidget {
   String _getFamilyKey(String fullFontFamily) {
     print('DEBUG: _getFamilyKey input: $fullFontFamily');
     
-    // 正確にマッピング
+    // 正確にマッピング（, sans-serifを削除済みの新形式対応）
+    if (fullFontFamily == 'Roboto Condensed') return 'Roboto Condensed';
+    if (fullFontFamily == 'Roboto Light') return 'sans-serif';
+    if (fullFontFamily == 'Roboto Medium') return 'sans-serif-medium';
+    
+    // フォールバック（旧データとの互換性）
     if (fullFontFamily == 'Roboto Condensed, sans-serif') return 'Roboto Condensed';
     if (fullFontFamily == 'Roboto Light, sans-serif') return 'sans-serif';
     if (fullFontFamily == 'Roboto Medium, sans-serif') return 'sans-serif-medium';
-    
-    // フォールバック（既存データとの互換性）
     if (fullFontFamily.contains('Roboto Condensed')) return 'Roboto Condensed';
     if (fullFontFamily.contains('Roboto Light')) return 'sans-serif';
     if (fullFontFamily.contains('Roboto Medium')) return 'sans-serif-medium';
-    if (fullFontFamily.contains('Roboto') && !fullFontFamily.contains('Condensed') && !fullFontFamily.contains('Light') && !fullFontFamily.contains('Medium')) return 'sans-serif';
     
     // デフォルト
     return 'sans-serif-condensed';
