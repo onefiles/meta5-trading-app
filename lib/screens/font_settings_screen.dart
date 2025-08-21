@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/font_provider.dart';
 import '../utils/platform_helper.dart';
@@ -41,12 +42,13 @@ class FontSettingsScreen extends StatelessWidget {
                   currentFontSize: fontProvider.positionFontSize,
                   currentFontWeight: fontProvider.positionFontWeight,
                   currentIsBold: fontProvider.positionIsBold,
+                  currentColor: fontProvider.positionColor,
                   onFontFamilyChanged: (value) => fontProvider.updatePositionFont(fontFamily: value),
                   onFontSizeChanged: (value) => fontProvider.updatePositionFont(fontSize: value),
                   onFontWeightChanged: (value) => fontProvider.updatePositionFont(fontWeight: value),
                   onBoldChanged: (value) => fontProvider.updatePositionFont(isBold: value),
+                  onColorChanged: (value) => fontProvider.updatePositionFont(color: value),
                   previewText: 'sell 0.01',
-                  previewColor: const Color(0xFFc74932),
                   fontProvider: fontProvider,
                   fontType: 'position',
                 ),
@@ -60,12 +62,13 @@ class FontSettingsScreen extends StatelessWidget {
                   currentFontSize: fontProvider.priceFontSize,
                   currentFontWeight: fontProvider.priceFontWeight,
                   currentIsBold: fontProvider.priceIsBold,
+                  currentColor: fontProvider.priceColor,
                   onFontFamilyChanged: (value) => fontProvider.updatePriceFont(fontFamily: value),
                   onFontSizeChanged: (value) => fontProvider.updatePriceFont(fontSize: value),
                   onFontWeightChanged: (value) => fontProvider.updatePriceFont(fontWeight: value),
                   onBoldChanged: (value) => fontProvider.updatePriceFont(isBold: value),
+                  onColorChanged: (value) => fontProvider.updatePriceFont(color: value),
                   previewText: '195.50 → 196.20',
-                  previewColor: const Color(0xFF95979b),
                   fontProvider: fontProvider,
                   fontType: 'price',
                 ),
@@ -79,14 +82,55 @@ class FontSettingsScreen extends StatelessWidget {
                   currentFontSize: fontProvider.profitFontSize,
                   currentFontWeight: fontProvider.profitFontWeight,
                   currentIsBold: fontProvider.profitIsBold,
+                  currentColor: fontProvider.profitColor,
                   onFontFamilyChanged: (value) => fontProvider.updateProfitFont(fontFamily: value),
                   onFontSizeChanged: (value) => fontProvider.updateProfitFont(fontSize: value),
                   onFontWeightChanged: (value) => fontProvider.updateProfitFont(fontWeight: value),
                   onBoldChanged: (value) => fontProvider.updateProfitFont(isBold: value),
+                  onColorChanged: (value) => fontProvider.updateProfitFont(color: value),
                   previewText: '+5,420.00',
-                  previewColor: const Color(0xFF1777e7),
                   fontProvider: fontProvider,
                   fontType: 'profit',
+                ),
+                const SizedBox(height: 16),
+                
+                // 通貨ペア設定
+                _buildFontSettingCard(
+                  title: '通貨ペア',
+                  subtitle: 'GBPJPY, USDJPY等',
+                  currentFontFamily: fontProvider.symbolFontFamily,
+                  currentFontSize: fontProvider.symbolFontSize,
+                  currentFontWeight: fontProvider.symbolFontWeight,
+                  currentIsBold: fontProvider.symbolIsBold,
+                  currentColor: fontProvider.symbolColor,
+                  onFontFamilyChanged: (value) => fontProvider.updateSymbolFont(fontFamily: value),
+                  onFontSizeChanged: (value) => fontProvider.updateSymbolFont(fontSize: value),
+                  onFontWeightChanged: (value) => fontProvider.updateSymbolFont(fontWeight: value),
+                  onBoldChanged: (value) => fontProvider.updateSymbolFont(isBold: value),
+                  onColorChanged: (value) => fontProvider.updateSymbolFont(color: value),
+                  previewText: 'GBPJPY',
+                  fontProvider: fontProvider,
+                  fontType: 'symbol',
+                ),
+                const SizedBox(height: 16),
+                
+                // 取引時間設定
+                _buildFontSettingCard(
+                  title: '取引時間',
+                  subtitle: '2025.08.21 14:47:38等',
+                  currentFontFamily: fontProvider.timeFontFamily,
+                  currentFontSize: fontProvider.timeFontSize,
+                  currentFontWeight: fontProvider.timeFontWeight,
+                  currentIsBold: fontProvider.timeIsBold,
+                  currentColor: fontProvider.timeColor,
+                  onFontFamilyChanged: (value) => fontProvider.updateTimeFont(fontFamily: value),
+                  onFontSizeChanged: (value) => fontProvider.updateTimeFont(fontSize: value),
+                  onFontWeightChanged: (value) => fontProvider.updateTimeFont(fontWeight: value),
+                  onBoldChanged: (value) => fontProvider.updateTimeFont(isBold: value),
+                  onColorChanged: (value) => fontProvider.updateTimeFont(color: value),
+                  previewText: '2025.08.21 14:47:38',
+                  fontProvider: fontProvider,
+                  fontType: 'time',
                 ),
                 const SizedBox(height: 32),
                 
@@ -121,12 +165,13 @@ class FontSettingsScreen extends StatelessWidget {
     required int currentFontSize,
     required int currentFontWeight,
     required bool currentIsBold,
+    String? currentColor,
     required Function(String) onFontFamilyChanged,
     required Function(int) onFontSizeChanged,
     required Function(int) onFontWeightChanged,
     required Function(bool) onBoldChanged,
+    Function(String)? onColorChanged,
     required String previewText,
-    required Color previewColor,
     required FontProvider fontProvider,
     required String fontType,
   }) {
@@ -164,7 +209,7 @@ class FontSettingsScreen extends StatelessWidget {
               child: Center(
                 child: Text(
                   previewText,
-                  style: _getPreviewTextStyle(fontProvider, fontType, previewColor),
+                  style: _getPreviewTextStyle(fontProvider, fontType, null),
                 ),
               ),
             ),
@@ -254,13 +299,55 @@ class FontSettingsScreen extends StatelessWidget {
                 }).toList(),
               ),
             ],
+            
+            // カラー設定
+            if (onColorChanged != null && currentColor != null) ...[
+              const SizedBox(height: 16),
+              const Text('フォントカラー:', style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: TextEditingController(text: currentColor),
+                      decoration: InputDecoration(
+                        hintText: '例: #FF9900',
+                        prefixIcon: Container(
+                          margin: const EdgeInsets.all(10),
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            color: _hexToColor(currentColor),
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[#a-fA-F0-9]')),
+                        LengthLimitingTextInputFormatter(7),
+                      ],
+                      onChanged: (value) {
+                        if (_isValidHexColor(value)) {
+                          onColorChanged(value);
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
     );
   }
 
-  TextStyle _getPreviewTextStyle(FontProvider fontProvider, String fontType, Color color) {
+  TextStyle _getPreviewTextStyle(FontProvider fontProvider, String fontType, Color? color) {
     switch (fontType) {
       case 'position':
         return fontProvider.getPositionTextStyle(color: color);
@@ -268,8 +355,12 @@ class FontSettingsScreen extends StatelessWidget {
         return fontProvider.getPriceTextStyle(color: color);
       case 'profit':
         return fontProvider.getProfitTextStyle(color: color);
+      case 'symbol':
+        return fontProvider.getSymbolTextStyle(color: color);
+      case 'time':
+        return fontProvider.getTimeTextStyle(color: color);
       default:
-        return TextStyle(color: color);
+        return TextStyle(color: color ?? Colors.black);
     }
   }
 
@@ -334,5 +425,23 @@ class FontSettingsScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+  
+  // HEXカラーコードをColorオブジェクトに変換
+  Color _hexToColor(String hexString) {
+    try {
+      final buffer = StringBuffer();
+      if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+      buffer.write(hexString.replaceFirst('#', ''));
+      return Color(int.parse(buffer.toString(), radix: 16));
+    } catch (e) {
+      return Colors.black;
+    }
+  }
+  
+  // HEXカラーコードのバリデーション
+  bool _isValidHexColor(String hexString) {
+    final hexRegex = RegExp(r'^#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$');
+    return hexRegex.hasMatch(hexString);
   }
 }

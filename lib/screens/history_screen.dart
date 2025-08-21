@@ -799,7 +799,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     );
   }
   
-  Widget _buildDetailRow(String label, String value) {
+  Widget _buildDetailRow(String label, String value, [FontProvider? fontProvider]) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -814,10 +814,12 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
           ),
           Text(
             value,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
+            style: label.contains('時刻') && fontProvider != null
+                ? fontProvider.getTimeTextStyle()
+                : const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
           ),
         ],
       ),
@@ -916,10 +918,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                   // 時間
                   Text(
                     _formatAndroidDateTime(item.closeTime),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF95979b),
-                    ),
+                    style: fontProvider.getTimeTextStyle(),
                   ),
                   const SizedBox(height: 4),
                   // 損益

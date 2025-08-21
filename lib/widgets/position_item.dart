@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 // import 'package:vibration/vibration.dart';  // Webビルドで問題を起こすため無効化
 import '../models/order.dart';
 import '../services/profit_calculator.dart';
+import '../providers/font_provider.dart';
 
 class PositionItem extends StatelessWidget {
   final Order order;
@@ -41,54 +43,48 @@ class PositionItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // 上段：シンボル、タイプ、ロット数
-                Row(
-                  children: [
-                    Text(
-                      '${order.symbolDisplay},',
-                      style: const TextStyle(
-                        color: Color(0xFF525252),
-                        fontSize: 14,
+                Consumer<FontProvider>(
+                  builder: (context, fontProvider, child) => Row(
+                    children: [
+                      Text(
+                        '${order.symbolDisplay},',
+                        style: fontProvider.getSymbolTextStyle(),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(width: 4),
-                    Text(
-                      order.typeText,
-                      style: TextStyle(
-                        color: typeColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
+                      const SizedBox(width: 4),
+                      Text(
+                        order.typeText,
+                        style: fontProvider.getPositionTextStyle(
+                          color: typeColor,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      order.lots.toStringAsFixed(2),
-                      style: TextStyle(
-                        color: typeColor,
-                        fontSize: 14,
+                      const SizedBox(width: 8),
+                      Text(
+                        order.lots.toStringAsFixed(2),
+                        style: fontProvider.getPositionTextStyle(
+                          color: typeColor,
+                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    // 損益表示
-                    Text(
-                      ProfitCalculator.formatProfit(order.profit),
-                      style: TextStyle(
-                        color: isProfit ? const Color(0xFF007aff) : const Color(0xFFe21d1d),
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                      const Spacer(),
+                      // 損益表示
+                      Text(
+                        ProfitCalculator.formatProfit(order.profit),
+                        style: fontProvider.getProfitTextStyle(
+                          color: isProfit ? const Color(0xFF007aff) : const Color(0xFFe21d1d),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 
                 const SizedBox(height: 8),
                 
                 // 下段：価格範囲
-                Text(
-                  '${ProfitCalculator.formatPrice(order.openPrice, order.symbol)} → ${ProfitCalculator.formatPrice(order.currentPrice, order.symbol)}',
-                  style: const TextStyle(
-                    color: Color(0xFF95979b),
-                    fontSize: 12,
+                Consumer<FontProvider>(
+                  builder: (context, fontProvider, child) => Text(
+                    '${ProfitCalculator.formatPrice(order.openPrice, order.symbol)} → ${ProfitCalculator.formatPrice(order.currentPrice, order.symbol)}',
+                    style: fontProvider.getPriceTextStyle(),
                   ),
                 ),
               ],

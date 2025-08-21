@@ -31,6 +31,25 @@ class FontProvider extends ChangeNotifier {
   int _profitFontWeight = 700;
   bool _profitIsBold = true;
   
+  // 通貨ペアの設定
+  String _symbolFontFamily = 'Roboto Condensed';
+  int _symbolFontSize = 16;
+  int _symbolFontWeight = 700;
+  bool _symbolIsBold = true;
+  
+  // 取引時間の設定
+  String _timeFontFamily = 'Roboto Condensed';
+  int _timeFontSize = 12;
+  int _timeFontWeight = 400;
+  bool _timeIsBold = false;
+  
+  // カラー設定
+  String _positionColor = '#000000';
+  String _priceColor = '#95979b';
+  String _profitColor = '#1777e7';
+  String _symbolColor = '#000000';
+  String _timeColor = '#666666';
+  
   // ゲッター
   String get positionFontFamily => _positionFontFamily;
   int get positionFontSize => _positionFontSize;
@@ -46,6 +65,22 @@ class FontProvider extends ChangeNotifier {
   int get profitFontSize => _profitFontSize;
   int get profitFontWeight => _profitFontWeight;
   bool get profitIsBold => _profitIsBold;
+  
+  String get symbolFontFamily => _symbolFontFamily;
+  int get symbolFontSize => _symbolFontSize;
+  int get symbolFontWeight => _symbolFontWeight;
+  bool get symbolIsBold => _symbolIsBold;
+  
+  String get timeFontFamily => _timeFontFamily;
+  int get timeFontSize => _timeFontSize;
+  int get timeFontWeight => _timeFontWeight;
+  bool get timeIsBold => _timeIsBold;
+  
+  String get positionColor => _positionColor;
+  String get priceColor => _priceColor;
+  String get profitColor => _profitColor;
+  String get symbolColor => _symbolColor;
+  String get timeColor => _timeColor;
   
   FontProvider() {
     _loadSettings();
@@ -77,6 +112,23 @@ class FontProvider extends ChangeNotifier {
       _profitFontWeight = prefs.getInt('profit_font_weight') ?? 700;
       _profitIsBold = prefs.getBool('profit_is_bold') ?? true;
       
+      _symbolFontFamily = cleanFontFamily(prefs.getString('symbol_font_family'));
+      _symbolFontSize = prefs.getInt('symbol_font_size') ?? 16;
+      _symbolFontWeight = prefs.getInt('symbol_font_weight') ?? 700;
+      _symbolIsBold = prefs.getBool('symbol_is_bold') ?? true;
+      
+      _timeFontFamily = cleanFontFamily(prefs.getString('time_font_family'));
+      _timeFontSize = prefs.getInt('time_font_size') ?? 12;
+      _timeFontWeight = prefs.getInt('time_font_weight') ?? 400;
+      _timeIsBold = prefs.getBool('time_is_bold') ?? false;
+      
+      // カラー設定の読み込み
+      _positionColor = prefs.getString('position_color') ?? '#000000';
+      _priceColor = prefs.getString('price_color') ?? '#95979b';
+      _profitColor = prefs.getString('profit_color') ?? '#1777e7';
+      _symbolColor = prefs.getString('symbol_color') ?? '#000000';
+      _timeColor = prefs.getString('time_color') ?? '#666666';
+      
       notifyListeners();
     } catch (e) {
       print('Error loading font settings: $e');
@@ -89,6 +141,7 @@ class FontProvider extends ChangeNotifier {
     int? fontSize,
     int? fontWeight,
     bool? isBold,
+    String? color,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     
@@ -109,6 +162,10 @@ class FontProvider extends ChangeNotifier {
       _positionIsBold = isBold;
       await prefs.setBool('position_is_bold', isBold);
     }
+    if (color != null && _isValidHexColor(color)) {
+      _positionColor = color;
+      await prefs.setString('position_color', color);
+    }
     
     notifyListeners();
   }
@@ -119,6 +176,7 @@ class FontProvider extends ChangeNotifier {
     int? fontSize,
     int? fontWeight,
     bool? isBold,
+    String? color,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     
@@ -138,6 +196,10 @@ class FontProvider extends ChangeNotifier {
       _priceIsBold = isBold;
       await prefs.setBool('price_is_bold', isBold);
     }
+    if (color != null && _isValidHexColor(color)) {
+      _priceColor = color;
+      await prefs.setString('price_color', color);
+    }
     
     notifyListeners();
   }
@@ -148,6 +210,7 @@ class FontProvider extends ChangeNotifier {
     int? fontSize,
     int? fontWeight,
     bool? isBold,
+    String? color,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     
@@ -167,6 +230,78 @@ class FontProvider extends ChangeNotifier {
       _profitIsBold = isBold;
       await prefs.setBool('profit_is_bold', isBold);
     }
+    if (color != null && _isValidHexColor(color)) {
+      _profitColor = color;
+      await prefs.setString('profit_color', color);
+    }
+    
+    notifyListeners();
+  }
+  
+  // 通貨ペアの設定更新
+  Future<void> updateSymbolFont({
+    String? fontFamily,
+    int? fontSize,
+    int? fontWeight,
+    bool? isBold,
+    String? color,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    
+    if (fontFamily != null) {
+      _symbolFontFamily = _mapFontFamily(fontFamily);
+      await prefs.setString('symbol_font_family', _symbolFontFamily);
+    }
+    if (fontSize != null) {
+      _symbolFontSize = fontSize;
+      await prefs.setInt('symbol_font_size', fontSize);
+    }
+    if (fontWeight != null) {
+      _symbolFontWeight = fontWeight;
+      await prefs.setInt('symbol_font_weight', fontWeight);
+    }
+    if (isBold != null) {
+      _symbolIsBold = isBold;
+      await prefs.setBool('symbol_is_bold', isBold);
+    }
+    if (color != null && _isValidHexColor(color)) {
+      _symbolColor = color;
+      await prefs.setString('symbol_color', color);
+    }
+    
+    notifyListeners();
+  }
+  
+  // 取引時間の設定更新
+  Future<void> updateTimeFont({
+    String? fontFamily,
+    int? fontSize,
+    int? fontWeight,
+    bool? isBold,
+    String? color,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    
+    if (fontFamily != null) {
+      _timeFontFamily = _mapFontFamily(fontFamily);
+      await prefs.setString('time_font_family', _timeFontFamily);
+    }
+    if (fontSize != null) {
+      _timeFontSize = fontSize;
+      await prefs.setInt('time_font_size', fontSize);
+    }
+    if (fontWeight != null) {
+      _timeFontWeight = fontWeight;
+      await prefs.setInt('time_font_weight', fontWeight);
+    }
+    if (isBold != null) {
+      _timeIsBold = isBold;
+      await prefs.setBool('time_is_bold', isBold);
+    }
+    if (color != null && _isValidHexColor(color)) {
+      _timeColor = color;
+      await prefs.setString('time_color', color);
+    }
     
     notifyListeners();
   }
@@ -180,16 +315,31 @@ class FontProvider extends ChangeNotifier {
     _positionFontSize = 14;
     _positionFontWeight = 700;
     _positionIsBold = true;
+    _positionColor = '#000000';
     
     _priceFontFamily = 'Roboto Condensed';
     _priceFontSize = 16;
     _priceFontWeight = 700;
     _priceIsBold = true;
+    _priceColor = '#95979b';
     
     _profitFontFamily = 'Roboto Condensed';
     _profitFontSize = 14;
     _profitFontWeight = 700;
     _profitIsBold = true;
+    _profitColor = '#1777e7';
+    
+    _symbolFontFamily = 'Roboto Condensed';
+    _symbolFontSize = 16;
+    _symbolFontWeight = 700;
+    _symbolIsBold = true;
+    _symbolColor = '#000000';
+    
+    _timeFontFamily = 'Roboto Condensed';
+    _timeFontSize = 12;
+    _timeFontWeight = 400;
+    _timeIsBold = false;
+    _timeColor = '#666666';
     
     // SharedPreferencesからフォント設定を削除
     await prefs.remove('position_font_family');
@@ -206,6 +356,22 @@ class FontProvider extends ChangeNotifier {
     await prefs.remove('profit_font_size');
     await prefs.remove('profit_font_weight');
     await prefs.remove('profit_is_bold');
+    await prefs.remove('profit_color');
+    
+    await prefs.remove('symbol_font_family');
+    await prefs.remove('symbol_font_size');
+    await prefs.remove('symbol_font_weight');
+    await prefs.remove('symbol_is_bold');
+    await prefs.remove('symbol_color');
+    
+    await prefs.remove('time_font_family');
+    await prefs.remove('time_font_size');
+    await prefs.remove('time_font_weight');
+    await prefs.remove('time_is_bold');
+    await prefs.remove('time_color');
+    
+    await prefs.remove('position_color');
+    await prefs.remove('price_color');
     
     notifyListeners();
   }
@@ -231,7 +397,7 @@ class FontProvider extends ChangeNotifier {
       fontFamily: _positionFontFamily,
       fontSize: _positionFontSize.toDouble(),
       fontWeight: _positionIsBold ? FontWeight.values[_getFontWeightIndex(_positionFontWeight)] : FontWeight.normal,
-      color: color ?? Colors.black,
+      color: color ?? _hexToColor(_positionColor),
     );
   }
   
@@ -240,7 +406,7 @@ class FontProvider extends ChangeNotifier {
       fontFamily: _priceFontFamily,
       fontSize: _priceFontSize.toDouble(),
       fontWeight: _priceIsBold ? FontWeight.values[_getFontWeightIndex(_priceFontWeight)] : FontWeight.normal,
-      color: color ?? Colors.black,
+      color: color ?? _hexToColor(_priceColor),
     );
   }
   
@@ -249,7 +415,25 @@ class FontProvider extends ChangeNotifier {
       fontFamily: _profitFontFamily,
       fontSize: _profitFontSize.toDouble(),
       fontWeight: _profitIsBold ? FontWeight.values[_getFontWeightIndex(_profitFontWeight)] : FontWeight.normal,
-      color: color ?? Colors.black,
+      color: color ?? _hexToColor(_profitColor),
+    );
+  }
+  
+  TextStyle getSymbolTextStyle({Color? color}) {
+    return TextStyle(
+      fontFamily: _symbolFontFamily,
+      fontSize: _symbolFontSize.toDouble(),
+      fontWeight: _symbolIsBold ? FontWeight.values[_getFontWeightIndex(_symbolFontWeight)] : FontWeight.normal,
+      color: color ?? _hexToColor(_symbolColor),
+    );
+  }
+  
+  TextStyle getTimeTextStyle({Color? color}) {
+    return TextStyle(
+      fontFamily: _timeFontFamily,
+      fontSize: _timeFontSize.toDouble(),
+      fontWeight: _timeIsBold ? FontWeight.values[_getFontWeightIndex(_timeFontWeight)] : FontWeight.normal,
+      color: color ?? _hexToColor(_timeColor),
     );
   }
   
@@ -267,5 +451,23 @@ class FontProvider extends ChangeNotifier {
       default:
         return 6; // FontWeight.w700 (default)
     }
+  }
+  
+  // HEXカラーコードをColorオブジェクトに変換
+  Color _hexToColor(String hexString) {
+    try {
+      final buffer = StringBuffer();
+      if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+      buffer.write(hexString.replaceFirst('#', ''));
+      return Color(int.parse(buffer.toString(), radix: 16));
+    } catch (e) {
+      return Colors.black; // フォールバック
+    }
+  }
+  
+  // HEXカラーコードのバリデーション
+  bool _isValidHexColor(String hexString) {
+    final hexRegex = RegExp(r'^#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$');
+    return hexRegex.hasMatch(hexString);
   }
 }
