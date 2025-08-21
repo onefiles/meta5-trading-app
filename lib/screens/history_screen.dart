@@ -868,7 +868,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                       Text(
                         '${item.symbol}, ${item.type == OrderType.buy ? 'buy' : 'sell'} ${item.lots.toStringAsFixed(2)}',
                         style: const TextStyle(
-                          fontSize: 14,
+                          fontFamily: 'Roboto Condensed',
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF525252),
                         ),
@@ -879,7 +880,9 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                       Text(
                         '${_formatAndroidPrice(item.openPrice, item.symbol)} → ${_formatAndroidPrice(item.closePrice, item.symbol)}',
                         style: const TextStyle(
-                          fontSize: 12,
+                          fontFamily: 'Roboto Condensed',
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                           color: Color(0xFF95979b),
                         ),
                       )
