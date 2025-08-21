@@ -49,9 +49,7 @@ class PositionItem extends StatelessWidget {
                       Text(
                         '${order.symbolDisplay},',
                         style: fontProvider.getSymbolTextStyle(),
-                        fontWeight: FontWeight.bold,
                       ),
-                    ),
                       const SizedBox(width: 4),
                       Text(
                         order.typeText,
