@@ -880,7 +880,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                             '${item.type == OrderType.buy ? 'buy' : 'sell'} ${item.lots.toStringAsFixed(2)}',
                             style: TextStyle(
                               fontFamily: 'Roboto Condensed, sans-serif',
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.w700,
                               color: item.type == OrderType.buy 
                                 ? const Color(0xFF1777e7)  // buyは青色
