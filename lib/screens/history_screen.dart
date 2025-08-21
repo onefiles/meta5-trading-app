@@ -59,14 +59,11 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          // Android版と同じ上部フィルター
+          // 期間選択ボタンは固定表示
           Container(
             color: Colors.white,
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                // 期間選択ボタン（1つの枠に縦線区切り）
-                Container(
+            padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
+            child: Container(
                   height: 36,
                   width: 244, // 横幅を制限（padding分を追加）
                   padding: const EdgeInsets.all(2), // 内側の余白を追加
@@ -113,43 +110,6 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                     ],
                   ),
                 ),
-                const SizedBox(height: 8), // 間隔を狭く（16px → 8px）
-                // 検索シンボル入力
-                Container(
-                  height: 36, // 高さを低く（44px → 36px）
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF0F0F0),
-                    borderRadius: BorderRadius.circular(6), // 角丸を小さく（22px → 6px）
-                  ),
-                  child: TextField(
-                    textAlignVertical: TextAlignVertical.center, // テキストを垂直中央配置
-                    decoration: const InputDecoration(
-                      hintText: '検索シンボルを入力',
-                      hintStyle: TextStyle(
-                        color: Color(0xFF999999),
-                        fontSize: 17, // フォントをほんの少し大きく（16px → 17px）
-                      ),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: Color(0xFF999999),
-                        size: 24, // アイコンをほんの少し大きく（22px → 24px）
-                      ),
-                      prefixIconConstraints: BoxConstraints(
-                        minWidth: 40, // アイコンとテキストの間隔を狭く
-                        minHeight: 36, // 高さを明示的に指定
-                      ),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.only(right: 8, bottom: 2), // 垂直位置を調整（上寄りを解消）
-                      isDense: true, // 密度を調整
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedSymbol = value.isEmpty ? '全て' : value.toUpperCase();
-                      });
-                    },
-                  ),
-                ),
-              ],
             ),
           ),
           
@@ -173,19 +133,63 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
 
                 return ListView.separated(
                   padding: EdgeInsets.zero,
-                  itemCount: history.length + 1, // +1 for statistics section
+                  itemCount: history.length + 2, // +2 for search field and statistics section
                   separatorBuilder: (context, index) {
+                    if (index == 0) {
+                      // 検索フィールドの後は区切り線なし
+                      return const SizedBox.shrink();
+                    }
                     return Container(
                       height: 0.5,
                       color: const Color(0xFFE0E0E0),
                     );
                   },
                   itemBuilder: (context, index) {
-                    if (index == history.length) {
+                    if (index == 0) {
+                      // 最初に検索フィールドを表示
+                      return Container(
+                        color: Colors.white,
+                        padding: const EdgeInsets.all(16),
+                        child: Container(
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF0F0F0),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: TextField(
+                            textAlignVertical: TextAlignVertical.center,
+                            decoration: const InputDecoration(
+                              hintText: '検索シンボルを入力',
+                              hintStyle: TextStyle(
+                                color: Color(0xFF999999),
+                                fontSize: 17,
+                              ),
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: Color(0xFF999999),
+                                size: 24,
+                              ),
+                              prefixIconConstraints: BoxConstraints(
+                                minWidth: 40,
+                                minHeight: 36,
+                              ),
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.only(right: 8, bottom: 2),
+                              isDense: true,
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedSymbol = value.isEmpty ? '全て' : value.toUpperCase();
+                              });
+                            },
+                          ),
+                        ),
+                      );
+                    } else if (index == history.length + 1) {
                       // 最後に統計情報を表示
                       return _buildStatisticsSection(provider);
                     }
-                    final item = history[index];
+                    final item = history[index - 1];
                     return _buildAndroidHistoryItem(item);
                   },
                 );
