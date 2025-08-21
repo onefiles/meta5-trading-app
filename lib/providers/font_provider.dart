@@ -83,13 +83,16 @@ class FontProvider extends ChangeNotifier {
   String get timeColor => _timeColor;
   
   FontProvider() {
+    print('FontProvider: Constructor called');
     _loadSettings();
   }
   
   // 設定の読み込み
   Future<void> _loadSettings() async {
+    print('FontProvider: Loading settings...');
     try {
       final prefs = await SharedPreferences.getInstance();
+      print('FontProvider: SharedPreferences loaded');
       
       // 既存データの移行処理（, sans-serifを削除）
       String cleanFontFamily(String? family, String defaultFamily) {
@@ -129,6 +132,7 @@ class FontProvider extends ChangeNotifier {
       _symbolColor = prefs.getString('symbol_color') ?? '#000000';
       _timeColor = prefs.getString('time_color') ?? '#666666';
       
+      print('FontProvider: Settings loaded - Symbol: $_symbolFontFamily, Size: $_symbolFontSize');
       notifyListeners();
     } catch (e) {
       print('Error loading font settings: $e');
@@ -347,6 +351,7 @@ class FontProvider extends ChangeNotifier {
   }
   
   TextStyle getPriceTextStyle({Color? color}) {
+    print('FontProvider: Price font - Family: $_priceFontFamily, Size: $_priceFontSize, Weight: $_priceFontWeight, Bold: $_priceIsBold');
     return TextStyle(
       fontFamily: _priceFontFamily,
       fontSize: _priceFontSize.toDouble(),
@@ -365,6 +370,7 @@ class FontProvider extends ChangeNotifier {
   }
   
   TextStyle getSymbolTextStyle({Color? color}) {
+    print('FontProvider: Symbol font - Family: $_symbolFontFamily, Size: $_symbolFontSize, Weight: $_symbolFontWeight, Bold: $_symbolIsBold');
     return TextStyle(
       fontFamily: _symbolFontFamily,
       fontSize: _symbolFontSize.toDouble(),

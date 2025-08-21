@@ -152,10 +152,9 @@ class QuotesScreenAndroid extends StatelessWidget {
                               const SizedBox(height: 4),
                               Text(
                                 _getSymbolName(symbol),
-                                style: TextStyle(
-                                  fontSize: 12,
+                                style: fontProvider.getSymbolTextStyle(
                                   color: Colors.grey.shade600,
-                                ),
+                                ).copyWith(fontSize: 12),
                               ),
                             ],
                           ),
@@ -322,11 +321,12 @@ class QuotesScreenAndroid extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              symbol,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+            Consumer<FontProvider>(
+              builder: (context, fontProvider, child) => Text(
+                symbol,
+                style: fontProvider.getSymbolTextStyle().copyWith(
+                  fontSize: 24,
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -336,12 +336,12 @@ class QuotesScreenAndroid extends StatelessWidget {
                 Column(
                   children: [
                     const Text('Bid'),
-                    Text(
-                      _formatPrice(prices['bid'] ?? 0.0, symbol),
-                      style: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
+                    Consumer<FontProvider>(
+                      builder: (context, fontProvider, child) => Text(
+                        _formatPrice(prices['bid'] ?? 0.0, symbol),
+                        style: fontProvider.getPriceTextStyle(
+                          color: Colors.red,
+                        ).copyWith(fontSize: 20),
                       ),
                     ),
                   ],
@@ -349,12 +349,12 @@ class QuotesScreenAndroid extends StatelessWidget {
                 Column(
                   children: [
                     const Text('Ask'),
-                    Text(
-                      _formatPrice(prices['ask'] ?? 0.0, symbol),
-                      style: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
+                    Consumer<FontProvider>(
+                      builder: (context, fontProvider, child) => Text(
+                        _formatPrice(prices['ask'] ?? 0.0, symbol),
+                        style: fontProvider.getPriceTextStyle(
+                          color: Colors.blue,
+                        ).copyWith(fontSize: 20),
                       ),
                     ),
                   ],
