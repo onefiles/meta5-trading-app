@@ -23,11 +23,11 @@ body * {
   src: url('https://fonts.gstatic.com/s/robotocondensed/v25/ieVi2ZhZI2eCN5jzbjEETS9weq8-19eLDwM9.woff2') format('woff2');
 }
 
-/* Roboto Light family - 細いフォント */
+/* Roboto Light family - 軽量フォント */
 @font-face {
   font-family: 'Roboto Light';
   font-style: normal;
-  font-weight: 300; /* Light */
+  font-weight: 300;
   font-display: swap;
   src: url('https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmSU5fBBc4.woff2') format('woff2');
 }
@@ -35,15 +35,15 @@ body * {
 @font-face {
   font-family: 'Roboto Light';
   font-style: normal;
-  font-weight: 400; /* Regular as Light base */
+  font-weight: 400;
   font-display: swap;
-  src: url('https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmSU5fBBc4.woff2') format('woff2');
+  src: url('https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'Roboto Light';
   font-style: normal;
-  font-weight: 700; /* Bold variant of Light */
+  font-weight: 700;
   font-display: swap;
   src: url('https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlfBBc4.woff2') format('woff2');
 }
@@ -52,38 +52,13 @@ body * {
 @font-face {
   font-family: 'Roboto Medium';
   font-style: normal;
-  font-weight: 400; /* Regular as Medium base */
-  font-display: swap;
-  src: url('https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmEU9fBBc4.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Roboto Medium';
-  font-style: normal;
-  font-weight: 500; /* True Medium weight */
-  font-display: swap;
-  src: url('https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmEU9fBBc4.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Roboto Medium';
-  font-style: normal;
-  font-weight: 700; /* Bold variant of Medium */
-  font-display: swap;
-  src: url('https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlfBBc4.woff2') format('woff2');
-}
-
-/* Original Roboto family (for compatibility) */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
   font-weight: 400;
   font-display: swap;
   src: url('https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'Roboto';
+  font-family: 'Roboto Medium';
   font-style: normal;
   font-weight: 500;
   font-display: swap;
@@ -91,7 +66,7 @@ body * {
 }
 
 @font-face {
-  font-family: 'Roboto';
+  font-family: 'Roboto Medium';
   font-style: normal;
   font-weight: 700;
   font-display: swap;

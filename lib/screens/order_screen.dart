@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../utils/platform_helper.dart';
 import '../providers/order_provider.dart';
 import '../providers/price_provider.dart';
+import '../providers/font_provider.dart';
 import '../models/order.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -140,9 +141,11 @@ class _OrderScreenState extends State<OrderScreen> {
                   value: symbol,
                   child: Row(
                     children: [
-                      Text(
-                        symbol,
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      Consumer<FontProvider>(
+                        builder: (context, fontProvider, child) => Text(
+                          symbol,
+                          style: fontProvider.getSymbolTextStyle(),
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Text(
