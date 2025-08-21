@@ -5,6 +5,7 @@ import 'dart:math' show Random;
 import 'package:provider/provider.dart';
 import 'quotes_screen_ios.dart';
 import '../providers/price_provider.dart';
+import '../providers/font_provider.dart';
 import 'order_screen.dart';
 import 'chart_screen.dart';
 
@@ -140,25 +141,24 @@ class QuotesScreenAndroid extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              symbol,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                        Consumer<FontProvider>(
+                          builder: (context, fontProvider, child) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                symbol,
+                                style: fontProvider.getSymbolTextStyle(),
                               ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              _getSymbolName(symbol),
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey.shade600,
+                              const SizedBox(height: 4),
+                              Text(
+                                _getSymbolName(symbol),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey.shade600,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -210,12 +210,12 @@ class QuotesScreenAndroid extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(height: 4),
-                                Text(
-                                  _formatPrice(prices['bid'] ?? 0.0, symbol),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red,
+                                Consumer<FontProvider>(
+                                  builder: (context, fontProvider, child) => Text(
+                                    _formatPrice(prices['bid'] ?? 0.0, symbol),
+                                    style: fontProvider.getPriceTextStyle(
+                                      color: Colors.red,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -240,12 +240,12 @@ class QuotesScreenAndroid extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(height: 4),
-                                Text(
-                                  _formatPrice(prices['ask'] ?? 0.0, symbol),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue,
+                                Consumer<FontProvider>(
+                                  builder: (context, fontProvider, child) => Text(
+                                    _formatPrice(prices['ask'] ?? 0.0, symbol),
+                                    style: fontProvider.getPriceTextStyle(
+                                      color: Colors.blue,
+                                    ),
                                   ),
                                 ),
                               ],
