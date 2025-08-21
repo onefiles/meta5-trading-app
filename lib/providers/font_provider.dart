@@ -7,7 +7,7 @@ class FontProvider extends ChangeNotifier {
     'sans-serif',
     'sans-serif-medium', 
     'sans-serif-condensed',
-    'Roboto Condensed',
+    'monospace',
   ];
   
   static const List<int> fontSizes = [12, 14, 16, 18, 20];
@@ -217,7 +217,7 @@ class FontProvider extends ChangeNotifier {
       'sans-serif' => 'Roboto Light',
       'sans-serif-medium' => 'Roboto Medium', 
       'sans-serif-condensed' => 'Roboto Condensed',
-      'Roboto Condensed' => 'Roboto Condensed',
+      'monospace' => 'Roboto Mono',
       _ => 'Roboto Condensed',
     };
     print('DEBUG: _mapFontFamily output: $result');

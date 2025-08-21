@@ -277,17 +277,19 @@ class FontSettingsScreen extends StatelessWidget {
     print('DEBUG: _getFamilyKey input: $fullFontFamily');
     
     // 正確にマッピング（, sans-serifを削除済みの新形式対応）
-    if (fullFontFamily == 'Roboto Condensed') return 'Roboto Condensed';
+    if (fullFontFamily == 'Roboto Condensed') return 'sans-serif-condensed';
     if (fullFontFamily == 'Roboto Light') return 'sans-serif';
     if (fullFontFamily == 'Roboto Medium') return 'sans-serif-medium';
+    if (fullFontFamily == 'Roboto Mono') return 'monospace';
     
     // フォールバック（旧データとの互換性）
-    if (fullFontFamily == 'Roboto Condensed, sans-serif') return 'Roboto Condensed';
+    if (fullFontFamily == 'Roboto Condensed, sans-serif') return 'sans-serif-condensed';
     if (fullFontFamily == 'Roboto Light, sans-serif') return 'sans-serif';
     if (fullFontFamily == 'Roboto Medium, sans-serif') return 'sans-serif-medium';
-    if (fullFontFamily.contains('Roboto Condensed')) return 'Roboto Condensed';
+    if (fullFontFamily.contains('Roboto Condensed')) return 'sans-serif-condensed';
     if (fullFontFamily.contains('Roboto Light')) return 'sans-serif';
     if (fullFontFamily.contains('Roboto Medium')) return 'sans-serif-medium';
+    if (fullFontFamily.contains('Roboto Mono')) return 'monospace';
     
     // デフォルト
     return 'sans-serif-condensed';
@@ -296,13 +298,13 @@ class FontSettingsScreen extends StatelessWidget {
   String _getFamilyDisplayName(String family) {
     switch (family) {
       case 'sans-serif':
-        return 'Sans-serif';
+        return 'Light';
       case 'sans-serif-medium':
         return 'Medium';
       case 'sans-serif-condensed':
         return 'Condensed';
-      case 'Roboto Condensed':
-        return 'Roboto Condensed';
+      case 'monospace':
+        return 'Monospace';
       default:
         return family;
     }
