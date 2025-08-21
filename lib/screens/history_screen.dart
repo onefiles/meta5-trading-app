@@ -871,7 +871,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                           fontFamily: 'Roboto Condensed',
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF525252),
+                          color: Color(0xFF000000),
                         ),
                       ),
                     const SizedBox(height: 1),
