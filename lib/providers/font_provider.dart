@@ -14,19 +14,19 @@ class FontProvider extends ChangeNotifier {
   static const List<int> fontWeights = [400, 500, 700, 900];
   
   // ポジション方向の設定
-  String _positionFontFamily = 'RobotoCondensed';
+  String _positionFontFamily = 'Roboto Condensed, sans-serif';
   int _positionFontSize = 14;
   int _positionFontWeight = 700;
   bool _positionIsBold = true;
   
   // 価格データの設定
-  String _priceFontFamily = 'RobotoCondensed';
+  String _priceFontFamily = 'Roboto Condensed, sans-serif';
   int _priceFontSize = 16;
   int _priceFontWeight = 700;
   bool _priceIsBold = true;
   
   // 損益の設定
-  String _profitFontFamily = 'RobotoCondensed';
+  String _profitFontFamily = 'Roboto Condensed, sans-serif';
   int _profitFontSize = 14;
   int _profitFontWeight = 700;
   bool _profitIsBold = true;
@@ -56,17 +56,17 @@ class FontProvider extends ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       
-      _positionFontFamily = prefs.getString('position_font_family') ?? 'RobotoCondensed';
+      _positionFontFamily = prefs.getString('position_font_family') ?? 'Roboto Condensed, sans-serif';
       _positionFontSize = prefs.getInt('position_font_size') ?? 14;
       _positionFontWeight = prefs.getInt('position_font_weight') ?? 700;
       _positionIsBold = prefs.getBool('position_is_bold') ?? true;
       
-      _priceFontFamily = prefs.getString('price_font_family') ?? 'RobotoCondensed';
+      _priceFontFamily = prefs.getString('price_font_family') ?? 'Roboto Condensed, sans-serif';
       _priceFontSize = prefs.getInt('price_font_size') ?? 16;
       _priceFontWeight = prefs.getInt('price_font_weight') ?? 700;
       _priceIsBold = prefs.getBool('price_is_bold') ?? true;
       
-      _profitFontFamily = prefs.getString('profit_font_family') ?? 'RobotoCondensed';
+      _profitFontFamily = prefs.getString('profit_font_family') ?? 'Roboto Condensed, sans-serif';
       _profitFontSize = prefs.getInt('profit_font_size') ?? 14;
       _profitFontWeight = prefs.getInt('profit_font_weight') ?? 700;
       _profitIsBold = prefs.getBool('profit_is_bold') ?? true;
@@ -169,17 +169,17 @@ class FontProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     
     // デフォルト値に戻す
-    _positionFontFamily = 'RobotoCondensed';
+    _positionFontFamily = 'Roboto Condensed, sans-serif';
     _positionFontSize = 14;
     _positionFontWeight = 700;
     _positionIsBold = true;
     
-    _priceFontFamily = 'RobotoCondensed';
+    _priceFontFamily = 'Roboto Condensed, sans-serif';
     _priceFontSize = 16;
     _priceFontWeight = 700;
     _priceIsBold = true;
     
-    _profitFontFamily = 'RobotoCondensed';
+    _profitFontFamily = 'Roboto Condensed, sans-serif';
     _profitFontSize = 14;
     _profitFontWeight = 700;
     _profitIsBold = true;
@@ -207,20 +207,21 @@ class FontProvider extends ChangeNotifier {
   String _mapFontFamily(String fontFamily) {
     switch (fontFamily) {
       case 'sans-serif':
-        return 'Roboto';
+        return 'Roboto, sans-serif';
       case 'sans-serif-medium':
-        return 'Roboto';
+        return 'Roboto, sans-serif';
       case 'sans-serif-condensed':
-        return 'RobotoCondensed';
+        return 'Roboto Condensed, sans-serif';
       case 'Roboto Condensed':
-        return 'RobotoCondensed';
+        return 'Roboto Condensed, sans-serif';
       default:
-        return 'RobotoCondensed';
+        return 'Roboto Condensed, sans-serif';
     }
   }
   
   // TextStyleを生成するヘルパーメソッド
   TextStyle getPositionTextStyle({Color? color}) {
+    print('FontProvider: Position font - Family: $_positionFontFamily, Size: $_positionFontSize, Weight: $_positionFontWeight, Bold: $_positionIsBold');
     return TextStyle(
       fontFamily: _positionFontFamily,
       fontSize: _positionFontSize.toDouble(),
