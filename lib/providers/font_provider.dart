@@ -208,8 +208,8 @@ class FontProvider extends ChangeNotifier {
   String _mapFontFamily(String fontFamily) {
     print('DEBUG: _mapFontFamily input: $fontFamily');
     final result = switch (fontFamily) {
-      'sans-serif' => 'Roboto, sans-serif',
-      'sans-serif-medium' => 'Roboto, sans-serif', // Mediumウェイトで表現
+      'sans-serif' => 'Roboto Light, sans-serif',
+      'sans-serif-medium' => 'Roboto Medium, sans-serif', 
       'sans-serif-condensed' => 'Roboto Condensed, sans-serif',
       'Roboto Condensed' => 'Roboto Condensed, sans-serif',
       _ => 'Roboto Condensed, sans-serif',

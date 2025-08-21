@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:async';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import '../utils/platform_helper.dart';
 
 class ApiService {
   static const String baseUrl = 'https://jpn225.jp/meta5/api';
@@ -141,7 +143,9 @@ class ApiService {
         throw Exception('API response error: ${response.statusCode}');
       }
     } catch (e) {
-      print('Price fetch error: $e');
+      if (!PlatformHelper.isWeb || kDebugMode) {
+        print('Price fetch error: $e');
+      }
       _isConnected = false;
       
       // エラー時は古い価格データを表示継続（Android版と同じ挙動）
@@ -154,7 +158,9 @@ class ApiService {
       }
       
       // 1分後にリトライ（Android版と同じ）
-      print('Retrying in 1 minute...');
+      if (!PlatformHelper.isWeb || kDebugMode) {
+        print('Retrying in 1 minute...');
+      }
       Timer(const Duration(minutes: 1), () {
         if (_priceUpdateTimer?.isActive == true) {
           _fetchLatestPrice();

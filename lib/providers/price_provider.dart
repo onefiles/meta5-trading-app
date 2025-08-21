@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:async';
 import '../services/api_service.dart';
+import '../utils/platform_helper.dart';
 
 class PriceProvider extends ChangeNotifier {
   final ApiService _apiService = ApiService();
@@ -26,14 +28,19 @@ class PriceProvider extends ChangeNotifier {
     
     _priceSubscription = _apiService.priceStream.listen(
       (newPrices) {
-        print('PriceProvider: Received new prices: ${newPrices.keys}');
+        // Web版でのログ出力を制限
+        if (!PlatformHelper.isWeb || kDebugMode) {
+          print('PriceProvider: Received new prices: ${newPrices.keys}');
+        }
         
         // 価格が変更された通貨ペアをチェック
         for (final symbol in newPrices.keys) {
           final oldPrice = _prices[symbol]?['bid'];
           final newPrice = newPrices[symbol]?['bid'];
           
-          print('PriceProvider: $symbol - Old: $oldPrice, New: $newPrice');
+          if (!PlatformHelper.isWeb || kDebugMode) {
+            print('PriceProvider: $symbol - Old: $oldPrice, New: $newPrice');
+          }
           
           if (oldPrice != null && newPrice != null && oldPrice != newPrice) {
             // アラートチェックのコールバックを呼び出し
@@ -42,11 +49,15 @@ class PriceProvider extends ChangeNotifier {
         }
         
         _prices = newPrices;
-        print('PriceProvider: Updated prices - GBPJPY: ${_prices['GBPJPY']}, BTCJPY: ${_prices['BTCJPY']}');
+        if (!PlatformHelper.isWeb || kDebugMode) {
+          print('PriceProvider: Updated prices - GBPJPY: ${_prices['GBPJPY']}, BTCJPY: ${_prices['BTCJPY']}');
+        }
         notifyListeners();
       },
       onError: (error) {
-        print('Price stream error: $error');
+        if (!PlatformHelper.isWeb || kDebugMode) {
+          print('Price stream error: $error');
+        }
       },
     );
   }
