@@ -852,19 +852,19 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                     if (item.type == OrderType.balance)
                       Text(
                         'Balance',
-                        style: fontProvider.getSymbolTextStyle(),
+                        style: fontProvider.getBalanceCreditTextStyle(),
                       )
                     else if (item.type == OrderType.credit)
                       Text(
                         'Credit',
-                        style: fontProvider.getSymbolTextStyle(),
+                        style: fontProvider.getBalanceCreditTextStyle(),
                       )
                     else
                       Row(
                         children: [
                           Text(
                             '${item.symbol}, ',
-                            style: fontProvider.getSymbolTextStyle(),
+                            style: fontProvider.getHistorySymbolTextStyle(),
                           ),
                           Text(
                             '${item.type == OrderType.buy ? 'buy' : 'sell'} ${item.lots.toStringAsFixed(2)}',

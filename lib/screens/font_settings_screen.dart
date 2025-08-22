@@ -132,6 +132,46 @@ class FontSettingsScreen extends StatelessWidget {
                   fontProvider: fontProvider,
                   fontType: 'time',
                 ),
+                const SizedBox(height: 16),
+                
+                // 取引履歴の通貨ペア設定
+                _buildFontSettingCard(
+                  title: '取引履歴の通貨ペア',
+                  subtitle: '履歴画面のGBPJPY, USDJPY等',
+                  currentFontFamily: fontProvider.historySymbolFontFamily,
+                  currentFontSize: fontProvider.historySymbolFontSize,
+                  currentFontWeight: fontProvider.historySymbolFontWeight,
+                  currentIsBold: fontProvider.historySymbolIsBold,
+                  currentColor: fontProvider.historySymbolColor,
+                  onFontFamilyChanged: (value) => fontProvider.updateHistorySymbolFont(fontFamily: value),
+                  onFontSizeChanged: (value) => fontProvider.updateHistorySymbolFont(fontSize: value),
+                  onFontWeightChanged: (value) => fontProvider.updateHistorySymbolFont(fontWeight: value),
+                  onBoldChanged: (value) => fontProvider.updateHistorySymbolFont(isBold: value),
+                  onColorChanged: (value) => fontProvider.updateHistorySymbolFont(color: value),
+                  previewText: 'GBPJPY',
+                  fontProvider: fontProvider,
+                  fontType: 'historySymbol',
+                ),
+                const SizedBox(height: 16),
+                
+                // Balance/Credit表示設定
+                _buildFontSettingCard(
+                  title: 'Balance/Credit表示',
+                  subtitle: '履歴画面のBalance, Credit',
+                  currentFontFamily: fontProvider.balanceCreditFontFamily,
+                  currentFontSize: fontProvider.balanceCreditFontSize,
+                  currentFontWeight: fontProvider.balanceCreditFontWeight,
+                  currentIsBold: fontProvider.balanceCreditIsBold,
+                  currentColor: fontProvider.balanceCreditColor,
+                  onFontFamilyChanged: (value) => fontProvider.updateBalanceCreditFont(fontFamily: value),
+                  onFontSizeChanged: (value) => fontProvider.updateBalanceCreditFont(fontSize: value),
+                  onFontWeightChanged: (value) => fontProvider.updateBalanceCreditFont(fontWeight: value),
+                  onBoldChanged: (value) => fontProvider.updateBalanceCreditFont(isBold: value),
+                  onColorChanged: (value) => fontProvider.updateBalanceCreditFont(color: value),
+                  previewText: 'Balance',
+                  fontProvider: fontProvider,
+                  fontType: 'balanceCredit',
+                ),
                 const SizedBox(height: 32),
                 
                 // リセットボタン
@@ -359,6 +399,10 @@ class FontSettingsScreen extends StatelessWidget {
         return fontProvider.getSymbolTextStyle(color: color);
       case 'time':
         return fontProvider.getTimeTextStyle(color: color);
+      case 'historySymbol':
+        return fontProvider.getHistorySymbolTextStyle(color: color);
+      case 'balanceCredit':
+        return fontProvider.getBalanceCreditTextStyle(color: color);
       default:
         return TextStyle(color: color ?? Colors.black);
     }

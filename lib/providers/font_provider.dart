@@ -43,12 +43,26 @@ class FontProvider extends ChangeNotifier {
   int _timeFontWeight = 400;
   bool _timeIsBold = false;
   
+  // 取引履歴の通貨ペア設定（新規追加）
+  String _historySymbolFontFamily = 'Roboto Condensed';
+  int _historySymbolFontSize = 16;
+  int _historySymbolFontWeight = 700;
+  bool _historySymbolIsBold = true;
+  
+  // Balance/Credit表示の設定（新規追加）
+  String _balanceCreditFontFamily = 'Roboto Condensed';
+  int _balanceCreditFontSize = 16;
+  int _balanceCreditFontWeight = 700;
+  bool _balanceCreditIsBold = true;
+  
   // カラー設定
   String _positionColor = '#000000';
   String _priceColor = '#95979b';
   String _profitColor = '#1777e7';
   String _symbolColor = '#000000';
   String _timeColor = '#666666';
+  String _historySymbolColor = '#000000';
+  String _balanceCreditColor = '#000000';
   
   // ゲッター
   String get positionFontFamily => _positionFontFamily;
@@ -76,11 +90,23 @@ class FontProvider extends ChangeNotifier {
   int get timeFontWeight => _timeFontWeight;
   bool get timeIsBold => _timeIsBold;
   
+  String get historySymbolFontFamily => _historySymbolFontFamily;
+  int get historySymbolFontSize => _historySymbolFontSize;
+  int get historySymbolFontWeight => _historySymbolFontWeight;
+  bool get historySymbolIsBold => _historySymbolIsBold;
+  
+  String get balanceCreditFontFamily => _balanceCreditFontFamily;
+  int get balanceCreditFontSize => _balanceCreditFontSize;
+  int get balanceCreditFontWeight => _balanceCreditFontWeight;
+  bool get balanceCreditIsBold => _balanceCreditIsBold;
+  
   String get positionColor => _positionColor;
   String get priceColor => _priceColor;
   String get profitColor => _profitColor;
   String get symbolColor => _symbolColor;
   String get timeColor => _timeColor;
+  String get historySymbolColor => _historySymbolColor;
+  String get balanceCreditColor => _balanceCreditColor;
   
   FontProvider() {
     print('FontProvider: Constructor called');
@@ -125,12 +151,24 @@ class FontProvider extends ChangeNotifier {
       _timeFontWeight = prefs.getInt('time_font_weight') ?? 400;
       _timeIsBold = prefs.getBool('time_is_bold') ?? false;
       
+      _historySymbolFontFamily = cleanFontFamily(prefs.getString('history_symbol_font_family'), 'Roboto Condensed');
+      _historySymbolFontSize = prefs.getInt('history_symbol_font_size') ?? 16;
+      _historySymbolFontWeight = prefs.getInt('history_symbol_font_weight') ?? 700;
+      _historySymbolIsBold = prefs.getBool('history_symbol_is_bold') ?? true;
+      
+      _balanceCreditFontFamily = cleanFontFamily(prefs.getString('balance_credit_font_family'), 'Roboto Condensed');
+      _balanceCreditFontSize = prefs.getInt('balance_credit_font_size') ?? 16;
+      _balanceCreditFontWeight = prefs.getInt('balance_credit_font_weight') ?? 700;
+      _balanceCreditIsBold = prefs.getBool('balance_credit_is_bold') ?? true;
+      
       // カラー設定の読み込み
       _positionColor = prefs.getString('position_color') ?? '#000000';
       _priceColor = prefs.getString('price_color') ?? '#95979b';
       _profitColor = prefs.getString('profit_color') ?? '#1777e7';
       _symbolColor = prefs.getString('symbol_color') ?? '#000000';
       _timeColor = prefs.getString('time_color') ?? '#666666';
+      _historySymbolColor = prefs.getString('history_symbol_color') ?? '#000000';
+      _balanceCreditColor = prefs.getString('balance_credit_color') ?? '#000000';
       
       print('FontProvider: Settings loaded - Symbol: $_symbolFontFamily, Size: $_symbolFontSize');
       notifyListeners();
@@ -150,6 +188,8 @@ class FontProvider extends ChangeNotifier {
     _profitFontFamily = 'Roboto Condensed';
     _symbolFontFamily = 'Roboto Condensed';
     _timeFontFamily = 'Roboto Light';
+    _historySymbolFontFamily = 'Roboto Condensed';
+    _balanceCreditFontFamily = 'Roboto Condensed';
     
     notifyListeners();
   }
@@ -291,6 +331,74 @@ class FontProvider extends ChangeNotifier {
     notifyListeners();
   }
   
+  // 取引履歴の通貨ペア設定更新
+  Future<void> updateHistorySymbolFont({
+    String? fontFamily,
+    int? fontSize,
+    int? fontWeight,
+    bool? isBold,
+    String? color,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    
+    if (fontFamily != null) {
+      _historySymbolFontFamily = _mapFontFamily(fontFamily);
+      await prefs.setString('history_symbol_font_family', _historySymbolFontFamily);
+    }
+    if (fontSize != null) {
+      _historySymbolFontSize = fontSize;
+      await prefs.setInt('history_symbol_font_size', fontSize);
+    }
+    if (fontWeight != null) {
+      _historySymbolFontWeight = fontWeight;
+      await prefs.setInt('history_symbol_font_weight', fontWeight);
+    }
+    if (isBold != null) {
+      _historySymbolIsBold = isBold;
+      await prefs.setBool('history_symbol_is_bold', isBold);
+    }
+    if (color != null && _isValidHexColor(color)) {
+      _historySymbolColor = color;
+      await prefs.setString('history_symbol_color', color);
+    }
+    
+    notifyListeners();
+  }
+  
+  // Balance/Credit設定更新
+  Future<void> updateBalanceCreditFont({
+    String? fontFamily,
+    int? fontSize,
+    int? fontWeight,
+    bool? isBold,
+    String? color,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    
+    if (fontFamily != null) {
+      _balanceCreditFontFamily = _mapFontFamily(fontFamily);
+      await prefs.setString('balance_credit_font_family', _balanceCreditFontFamily);
+    }
+    if (fontSize != null) {
+      _balanceCreditFontSize = fontSize;
+      await prefs.setInt('balance_credit_font_size', fontSize);
+    }
+    if (fontWeight != null) {
+      _balanceCreditFontWeight = fontWeight;
+      await prefs.setInt('balance_credit_font_weight', fontWeight);
+    }
+    if (isBold != null) {
+      _balanceCreditIsBold = isBold;
+      await prefs.setBool('balance_credit_is_bold', isBold);
+    }
+    if (color != null && _isValidHexColor(color)) {
+      _balanceCreditColor = color;
+      await prefs.setString('balance_credit_color', color);
+    }
+    
+    notifyListeners();
+  }
+  
   // 取引時間の設定更新
   Future<void> updateTimeFont({
     String? fontFamily,
@@ -385,6 +493,24 @@ class FontProvider extends ChangeNotifier {
       fontSize: _timeFontSize.toDouble(),
       fontWeight: _timeIsBold ? FontWeight.values[_getFontWeightIndex(_timeFontWeight)] : FontWeight.normal,
       color: color ?? _hexToColor(_timeColor),
+    );
+  }
+  
+  TextStyle getHistorySymbolTextStyle({Color? color}) {
+    return TextStyle(
+      fontFamily: _historySymbolFontFamily,
+      fontSize: _historySymbolFontSize.toDouble(),
+      fontWeight: _historySymbolIsBold ? FontWeight.values[_getFontWeightIndex(_historySymbolFontWeight)] : FontWeight.normal,
+      color: color ?? _hexToColor(_historySymbolColor),
+    );
+  }
+  
+  TextStyle getBalanceCreditTextStyle({Color? color}) {
+    return TextStyle(
+      fontFamily: _balanceCreditFontFamily,
+      fontSize: _balanceCreditFontSize.toDouble(),
+      fontWeight: _balanceCreditIsBold ? FontWeight.values[_getFontWeightIndex(_balanceCreditFontWeight)] : FontWeight.normal,
+      color: color ?? _hexToColor(_balanceCreditColor),
     );
   }
   
