@@ -154,7 +154,9 @@ class QuotesScreenAndroid extends StatelessWidget {
                                 _getSymbolName(symbol),
                                 style: fontProvider.getSymbolTextStyle(
                                   color: Colors.grey.shade600,
-                                ).copyWith(fontSize: 12),
+                                ).copyWith(
+                                  fontSize: fontProvider.symbolFontSize * 0.75, // 設定値の75%サイズ
+                                ),
                               ),
                             ],
                           ),
@@ -325,7 +327,7 @@ class QuotesScreenAndroid extends StatelessWidget {
               builder: (context, fontProvider, child) => Text(
                 symbol,
                 style: fontProvider.getSymbolTextStyle().copyWith(
-                  fontSize: 24,
+                  fontSize: fontProvider.symbolFontSize * 1.5, // 設定値の150%サイズ
                 ),
               ),
             ),
