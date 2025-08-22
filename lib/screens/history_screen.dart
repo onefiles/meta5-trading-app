@@ -850,36 +850,21 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                   children: [
                     // Balance/Credit/取引の表示を分岐
                     if (item.type == OrderType.balance)
-                      const Text(
+                      Text(
                         'Balance',
-                        style: TextStyle(
-                          fontFamily: 'Roboto Condensed, sans-serif',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF000000),
-                        ),
+                        style: fontProvider.getSymbolTextStyle(),
                       )
                     else if (item.type == OrderType.credit)
-                      const Text(
+                      Text(
                         'Credit',
-                        style: TextStyle(
-                          fontFamily: 'Roboto Condensed, sans-serif',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF000000),
-                        ),
+                        style: fontProvider.getSymbolTextStyle(),
                       )
                     else
                       Row(
                         children: [
                           Text(
                             '${item.symbol}, ',
-                            style: const TextStyle(
-                              fontFamily: 'Roboto Condensed, sans-serif',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF000000),
-                            ),
+                            style: fontProvider.getSymbolTextStyle(),
                           ),
                           Text(
                             '${item.type == OrderType.buy ? 'buy' : 'sell'} ${item.lots.toStringAsFixed(2)}',
